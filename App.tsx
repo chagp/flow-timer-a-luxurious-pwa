@@ -79,7 +79,7 @@ const App: React.FC = () => {
 
   return (
     <div className={`relative flex flex-col items-center justify-center min-h-screen p-4 font-sans text-light-text dark:text-dark-text transition-colors duration-500`}>
-      <div className="absolute top-4 left-4">
+      <div className="absolute top-6 left-4 right-4 flex justify-between items-center">
         <motion.button
             onClick={() => setSettingsOpen(true)}
             className="p-2 rounded-full bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border"
@@ -89,9 +89,8 @@ const App: React.FC = () => {
         >
             <SettingsIcon className="w-6 h-6" />
         </motion.button>
+        <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
       </div>
-
-      <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
       
       <main className="flex flex-col items-center justify-center w-full max-w-md mx-auto text-center gap-8">
         <TimerDisplay 
@@ -116,11 +115,9 @@ const App: React.FC = () => {
         />
       </main>
 
-      <div className="absolute bottom-4 left-4 font-mono text-sm sm:text-lg text-light-text/60 dark:text-dark-text/60">
-        Work: {formatWorkTime(timerState.totalWorkTime)}
-      </div>
-      <div className="absolute bottom-4 right-4 font-mono text-sm sm:text-lg text-light-text/60 dark:text-dark-text/60">
-        Total: {formatRealTime(timerState.realTimeElapsed)}
+      <div className="absolute bottom-10 left-4 right-4 flex justify-between items-center font-mono text-sm sm:text-base text-light-text/60 dark:text-dark-text/60">
+        <span>Work: {formatWorkTime(timerState.totalWorkTime)}</span>
+        <span>Total: {formatRealTime(timerState.realTimeElapsed)}</span>
       </div>
 
       <AnimatePresence>
