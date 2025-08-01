@@ -79,7 +79,7 @@ const App: React.FC = () => {
 
   return (
     <div className={`relative flex flex-col items-center justify-center min-h-screen p-4 font-sans text-light-text dark:text-dark-text transition-colors duration-500`}>
-      <div className="absolute top-6 left-4 right-4 flex justify-between items-center">
+      <div className="absolute top-10 left-4 right-4 flex justify-between items-center">
         <motion.button
             onClick={() => setSettingsOpen(true)}
             className="p-2 rounded-full bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border"
