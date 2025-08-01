@@ -1,0 +1,5 @@
+{
+  "name": "Flow Timer - A Luxurious PWA",
+  "description": "An elegant and feature-rich Focus Timer application designed to enhance productivity. This Progressive Web App (PWA) offers both a simple Pomodoro timer and an advanced interval timer, complete with customizable settings, session history, and a stunning, animated interface. Switch between light and dark themes, enjoy audio cues, and install it on any device for a native-app experience.",
+  "requestFramePermissions": []
+}
