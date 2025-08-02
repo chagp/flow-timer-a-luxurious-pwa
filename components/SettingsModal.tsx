@@ -143,6 +143,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, settings
                 <InputField label="Work Duration">
                   <DurationInput value={localSettings.simple.workTime} onChange={val => setLocalSettings({...localSettings, simple: {...localSettings.simple, workTime: val}})} />
                 </InputField>
+                
+                {/* Divider */}
+                <hr className="border-light-border dark:border-dark-border" />
+                
                 <InputField label="Break Label">
                   <input type="text" value={localSettings.simple.breakLabel} onChange={e => setLocalSettings({...localSettings, simple: {...localSettings.simple, breakLabel: e.target.value}})} className="w-full p-2 rounded-lg bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent outline-none" />
                 </InputField>
