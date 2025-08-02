@@ -27,6 +27,7 @@ export interface Settings {
   mode: TimerMode;
   simple: SimpleSettings;
   advanced: AdvancedSettings;
+  countdown: number; // countdown before timer starts (in seconds)
 }
 
 export interface HistoryEntry {
@@ -37,3 +38,9 @@ export interface HistoryEntry {
 }
 
 export type Theme = 'light' | 'dark';
+// Preset type for saved timer configurations
+export interface Preset {
+  id: string;
+  name: string;
+  settings: Settings;
+}

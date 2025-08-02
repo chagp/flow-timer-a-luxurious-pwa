@@ -154,7 +154,10 @@ export const useTimer = (
   }, [isActive, isFinished, advanceToNext]);
 
   const play = () => {
+    console.log('play() called - isFinished:', isFinished, 'timeRemaining:', timeRemaining);
+    
     if (isFinished) {
+      console.log('Timer was finished, resetting sequence');
       resetSequence();
       return;
     }
@@ -167,8 +170,16 @@ export const useTimer = (
     }
 
     if (timeRemaining > 0) {
+      console.log('Starting timer - setting isActive to true');
       setIsActive(true);
-      playSound('start');
+      // Try to play sound but don't let it block timer start
+      try {
+        playSound('start');
+      } catch (err) {
+        console.log('Sound play failed, but timer will continue:', err);
+      }
+    } else {
+      console.log('Cannot start timer - timeRemaining is 0');
     }
   };
 

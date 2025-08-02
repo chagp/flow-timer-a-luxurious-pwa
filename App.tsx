@@ -7,7 +7,8 @@ import { Settings, HistoryEntry, Theme, TimerMode } from './types';
 import { DEFAULT_SETTINGS, SOUNDS } from './constants';
 import TimerDisplay from './components/TimerDisplay';
 import Controls from './components/Controls';
-import SettingsModal from './components/SettingsModal';
+import ConfigurationScreen from './components/ConfigurationScreen';
+import CountdownScreen from './components/CountdownScreen';
 import ThemeToggle from './components/ThemeToggle';
 import SessionCounter from './components/SessionCounter';
 import { SettingsIcon } from './components/icons';
@@ -41,8 +42,9 @@ const App: React.FC = () => {
   const [settings, setSettings] = useLocalStorage<Settings>('flow-timer-settings', DEFAULT_SETTINGS);
   const [history, setHistory] = useLocalStorage<HistoryEntry[]>('flow-timer-history', []);
   const [theme, setTheme] = useLocalStorage<Theme>('flow-timer-theme', 'dark');
-
-  const [isSettingsOpen, setSettingsOpen] = useState(false);
+  const [showConfig, setShowConfig] = useState(false);
+  const [showCountdown, setShowCountdown] = useState(false);
+  const [pendingSettings, setPendingSettings] = useState<Settings | null>(null);
   
   const playStartSound = useSound(SOUNDS.start);
   const playEndSound = useSound(SOUNDS.end);
@@ -79,11 +81,60 @@ const App: React.FC = () => {
       setHistory([]);
   }
 
+  if (showCountdown && pendingSettings) {
+    return (
+      <CountdownScreen
+        countdownSeconds={pendingSettings.countdown}
+        onComplete={() => {
+          setSettings(pendingSettings!);
+          setShowCountdown(false);
+          setPendingSettings(null);
+          // Use multiple approaches for mobile compatibility
+          requestAnimationFrame(() => {
+            timerActions.resetSequence();
+            requestAnimationFrame(() => {
+              // Force timer to start with explicit state check
+              timerActions.play();
+              console.log('Timer play() called after countdown');
+              
+              // Double-check after a short delay for mobile
+              setTimeout(() => {
+                console.log('Double-checking timer state on mobile...');
+                if (!timerState.isActive && timerState.timeRemaining > 0) {
+                  console.log('Timer not active, forcing play again');
+                  timerActions.play();
+                }
+              }, 100);
+            });
+          });
+        }}
+        onCancel={() => {
+          setShowCountdown(false);
+          setPendingSettings(null);
+          setShowConfig(true);
+        }}
+      />
+    );
+  }
+
+  if (showConfig) {
+    return (
+      <ConfigurationScreen
+        onStart={(newSettings) => {
+          setShowConfig(false);
+          setPendingSettings(newSettings);
+          setShowCountdown(true);
+        }}
+        history={history}
+        onClearHistory={clearHistory}
+      />
+    );
+  }
   return (
-    <div className={`relative flex flex-col items-center justify-center min-h-screen p-4 font-sans text-light-text dark:text-dark-text transition-colors duration-500`}>
+    <div className={`relative flex flex-col items-center justify-center min-h-screen p-4 font-sans text-light-text dark:text-dark-text transition-colors duration-500`}>  
       <div className="absolute top-10 left-4 right-4 flex justify-between items-center">
         <motion.button
-            onClick={() => setSettingsOpen(true)}
+            onClick={() => setShowConfig(true)}
             className="p-2 rounded-full bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -124,21 +175,7 @@ const App: React.FC = () => {
         <span>Total: {formatRealTime(timerState.realTimeElapsed)}</span>
       </div>
 
-      <AnimatePresence>
-        {isSettingsOpen && (
-          <SettingsModal 
-            isOpen={isSettingsOpen} 
-            onClose={() => setSettingsOpen(false)}
-            settings={settings}
-            onSave={(newSettings) => {
-              setSettings(newSettings);
-              timerActions.reset();
-            }}
-            history={history}
-            onClearHistory={clearHistory}
-          />
-        )}
-      </AnimatePresence>
+      {/* Configuration screen replaces SettingsModal */}
     </div>
   );
 };
