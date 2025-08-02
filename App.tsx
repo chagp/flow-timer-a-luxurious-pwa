@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useTimer } from './hooks/useTimer';
 import { useSound } from './hooks/useSound';
-import { Settings, HistoryEntry, Theme } from './types';
+import { Settings, HistoryEntry, Theme, TimerMode } from './types';
 import { DEFAULT_SETTINGS, SOUNDS } from './constants';
 import TimerDisplay from './components/TimerDisplay';
 import Controls from './components/Controls';
@@ -60,6 +59,9 @@ const App: React.FC = () => {
   }, [playStartSound, playEndSound, playCompleteSound]);
 
   const [timerState, timerActions] = useTimer(settings, handleSessionEnd, handleSound);
+  // Determine session mode for display
+  const mode: 'work' | 'break' = (settings.mode === TimerMode.Simple && timerState.currentLabel === settings.simple.workLabel)
+    ? 'work' : 'break';
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -97,6 +99,8 @@ const App: React.FC = () => {
             timeRemaining={timerState.timeRemaining}
             totalDuration={timerState.totalDuration}
             label={timerState.isFinished ? 'DONE!' : timerState.currentLabel}
+            mode={mode}
+            theme={theme}
         />
         
         <Controls 
@@ -115,7 +119,7 @@ const App: React.FC = () => {
         />
       </main>
 
-      <div className="absolute bottom-10 left-4 right-4 flex justify-between items-center font-mono text-base sm:text-lg text-light-text/60 dark:text-dark-text/60">
+      <div className="absolute bottom-10 left-4 right-4 flex justify-between items-center font-mono text-base sm:text-lg text-light-text dark:text-dark-text">
         <span>Work: {formatWorkTime(timerState.totalWorkTime)}</span>
         <span>Total: {formatRealTime(timerState.realTimeElapsed)}</span>
       </div>
@@ -128,7 +132,7 @@ const App: React.FC = () => {
             settings={settings}
             onSave={(newSettings) => {
               setSettings(newSettings);
-              timerActions.resetSequence();
+              timerActions.reset();
             }}
             history={history}
             onClearHistory={clearHistory}

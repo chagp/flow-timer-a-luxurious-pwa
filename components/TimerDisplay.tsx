@@ -6,6 +6,8 @@ interface TimerDisplayProps {
   timeRemaining: number;
   totalDuration: number;
   label: string;
+  mode: 'work' | 'break';
+  theme: 'light' | 'dark';
 }
 
 const formatTime = (ms: number) => {
@@ -21,15 +23,24 @@ const STROKE_WIDTH = 18;
 const RADIUS = 150 - STROKE_WIDTH / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-const TimerDisplay: React.FC<TimerDisplayProps> = ({ timeRemaining, totalDuration, label }) => {
+const TimerDisplay: React.FC<TimerDisplayProps> = ({ timeRemaining, totalDuration, label, mode, theme }) => {
   // Calculate progress and angle directly on each render.
   const progress = totalDuration > 0 ? (totalDuration - timeRemaining) / totalDuration : 0;
   const angle = progress * 360;
   const circumference = CIRCUMFERENCE;
   const dashOffset = circumference * (1 - progress);
-
+  // Theme-based colors
+  const trackColor = theme === 'dark' ? '#1F2937' : '#F3F4F6';
+  const strokeColor = theme === 'dark'
+    ? (mode === 'work' ? '#63e6be' : '#546E7A')
+    : (mode === 'work' ? '#0b5ed7' : '#CBD5E1');
+  // Breathing effect during break
+  const breathingProps = mode === 'break'
+    ? { animate: { scale: [1, 1.02, 1] }, transition: { duration: 2, ease: 'easeInOut', repeat: Infinity } }
+    : {};
+  
   return (
-    <div className="relative w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center">
+    <motion.div {...breathingProps} className="relative w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center">
       <svg className="absolute w-full h-full" viewBox="0 0 300 300">
         {/* Background track */}
         <circle
@@ -37,7 +48,8 @@ const TimerDisplay: React.FC<TimerDisplayProps> = ({ timeRemaining, totalDuratio
           cy="150"
           r={RADIUS}
           strokeWidth={STROKE_WIDTH}
-          className="stroke-light-border dark:stroke-dark-border opacity-40"
+          stroke={trackColor}
+          opacity={0.4}
           fill="transparent"
         />
         {/* Animated progress fill */}
@@ -46,7 +58,7 @@ const TimerDisplay: React.FC<TimerDisplayProps> = ({ timeRemaining, totalDuratio
           cy="150"
           r={RADIUS}
           strokeWidth={STROKE_WIDTH}
-          className="stroke-light-text dark:stroke-dark-text"
+          stroke={strokeColor}
           fill="transparent"
           strokeLinecap="round"
           strokeDasharray={circumference}
@@ -85,7 +97,7 @@ const TimerDisplay: React.FC<TimerDisplayProps> = ({ timeRemaining, totalDuratio
           {label}
         </span>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
