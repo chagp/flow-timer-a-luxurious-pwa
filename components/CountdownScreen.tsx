@@ -27,7 +27,7 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({
     const tick = () => {
       const elapsed = Math.floor((Date.now() - start) / 1000);
       const remaining = Math.max(0, countdownSeconds - elapsed);
-      setTimeLeft(remaining);
+      setTimeLeft(prev => (prev !== remaining ? remaining : prev));
       // Play exactly once per remaining second
       if (remaining > 0 && remaining <= 3 && remaining !== lastAnnounced) {
         lastAnnounced = remaining;

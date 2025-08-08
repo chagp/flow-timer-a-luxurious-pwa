@@ -44,15 +44,19 @@ export function playCue(type: CueType) {
   switch (type) {
     case 'start':
     case 'workStart':
-      beep(880, 120, 0.18, 'sine');
-      beep(1320, 100, 0.14, 'sine', 0.12);
+      // Clear, bright double-up to mark work start
+      beep(990, 130, 0.22, 'sine');
+      beep(1480, 110, 0.18, 'sine', 0.13);
       break;
     case 'breakStart':
-      beep(440, 140, 0.16, 'sine');
-      beep(330, 120, 0.12, 'sine', 0.14);
+      // Softer but still noticeable down-chirp
+      beep(520, 140, 0.18, 'sine');
+      beep(390, 120, 0.14, 'sine', 0.16);
       break;
     case 'end':
-      beep(620, 120, 0.16);
+      // End marker: short double tick
+      beep(700, 110, 0.2, 'sine');
+      beep(560, 90, 0.16, 'sine', 0.12);
       break;
     case 'halfway':
       beep(740, 120, 0.14);
