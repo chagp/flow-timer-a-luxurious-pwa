@@ -37,6 +37,9 @@ const formatTotalTime = (settings: Settings): string => {
 const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, history, onClearHistory }) => {
   const [savedSettings, setSavedSettings] = useLocalStorage<Settings>('flow-timer-settings', DEFAULT_SETTINGS);
   const [localSettings, setLocalSettings] = useState<Settings>(savedSettings);
+  const [activeView, setActiveView] = useState<'simple' | 'advanced' | 'presets'>(
+    savedSettings.mode === TimerMode.Simple ? 'simple' : 'advanced'
+  );
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   const handleAddInterval = () => {
@@ -97,24 +100,47 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
               <HistoryIcon className="w-6 h-6 text-light-text dark:text-dark-text" />
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-2 p-1 bg-light-subtle-bg dark:bg-dark-subtle-bg rounded-lg">
-            {[TimerMode.Simple, TimerMode.Advanced].map(mode => (
-              <button 
-                key={mode} 
-                onClick={() => setLocalSettings({...localSettings, mode})} 
-                className={`p-2 rounded-md font-semibold capitalize transition-colors ${
-                  localSettings.mode === mode 
-                    ? 'bg-light-accent dark:bg-dark-accent text-white dark:text-dark-bg' 
-                    : 'hover:bg-white/50 dark:hover:bg-black/20'
-                }`}
-              >
-                {mode}
-              </button>
-            ))}
+          <div className="grid grid-cols-3 gap-2 p-1 bg-light-subtle-bg dark:bg-dark-subtle-bg rounded-lg">
+            <button
+              onClick={() => {
+                setLocalSettings({ ...localSettings, mode: TimerMode.Simple });
+                setActiveView('simple');
+              }}
+              className={`p-2 rounded-md font-semibold capitalize transition-colors ${
+                activeView === 'simple'
+                  ? 'bg-light-accent dark:bg-dark-accent text-white dark:text-dark-bg'
+                  : 'hover:bg-white/50 dark:hover:bg-black/20'
+              }`}
+            >
+              {TimerMode.Simple}
+            </button>
+            <button
+              onClick={() => {
+                setLocalSettings({ ...localSettings, mode: TimerMode.Advanced });
+                setActiveView('advanced');
+              }}
+              className={`p-2 rounded-md font-semibold capitalize transition-colors ${
+                activeView === 'advanced'
+                  ? 'bg-light-accent dark:bg-dark-accent text-white dark:text-dark-bg'
+                  : 'hover:bg-white/50 dark:hover:bg-black/20'
+              }`}
+            >
+              {TimerMode.Advanced}
+            </button>
+            <button
+              onClick={() => setActiveView('presets')}
+              className={`p-2 rounded-md font-semibold capitalize transition-colors ${
+                activeView === 'presets'
+                  ? 'bg-light-accent dark:bg-dark-accent text-white dark:text-dark-bg'
+                  : 'hover:bg-white/50 dark:hover:bg-black/20'
+              }`}
+            >
+              Presets
+            </button>
           </div>
         </div>
 
-        {localSettings.mode === TimerMode.Simple ? (
+        {activeView === 'simple' ? (
           <>
             <div className="space-y-4 text-center">
               <label className="text-2xl font-bold">Sets</label>
@@ -159,7 +185,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
               />
             </div>
           </>
-        ) : (
+        ) : activeView === 'advanced' ? (
           <>
             <div className="space-y-4 text-center">
               <label className="text-2xl font-bold">Rounds</label>
@@ -214,6 +240,13 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
                 <PlusIcon/> Add Interval
               </button>
             </div>
+          </>
+        ) : (
+          <>
+            <QuickPresets onApply={(s) => {
+              setLocalSettings(s);
+              setActiveView(s.mode === TimerMode.Simple ? 'simple' : 'advanced');
+            }} />
           </>
         )}
 

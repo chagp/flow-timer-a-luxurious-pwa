@@ -47,6 +47,19 @@ const QuickPresets: React.FC<QuickPresetsProps> = ({ onApply }) => {
       ]).flat() as Interval[],
       { id: 'cd', label: 'COOLDOWN', duration: 120 },
     ], 10),
+    tabataDouble: makeAdvancedBySequence([
+      { id: 'wup', label: 'WARMUP', duration: 120 },
+      ...Array.from({ length: 8 }, (_, i) => [
+        { id: `w${i}-a`, label: 'WORK', duration: 20 },
+        { id: `w${i}-r`, label: 'REST', duration: 10 },
+      ]).flat() as Interval[],
+      { id: 'rs', label: 'REST SET', duration: 60 },
+      ...Array.from({ length: 8 }, (_, i) => [
+        { id: `w2${i}-a`, label: 'WORK', duration: 20 },
+        { id: `w2${i}-r`, label: 'REST', duration: 10 },
+      ]).flat() as Interval[],
+      { id: 'cd', label: 'COOLDOWN', duration: 120 },
+    ], 10),
     tabataAB: makeAdvancedBySequence([
       ...Array.from({ length: 4 }, (_, i) => [
         { id: `a${i}`, label: 'WORK A', duration: 20 },
@@ -86,6 +99,20 @@ const QuickPresets: React.FC<QuickPresetsProps> = ({ onApply }) => {
         { id: `r${i}`, label: 'REST', duration: 60 },
       ]).flat() as Interval[],
     ], 3),
+    muayClinch: makeAdvancedBySequence([
+      ...Array.from({ length: 6 }, (_, i) => [
+        { id: `w${i}`, label: 'CLINCH', duration: 3 * 60 },
+        { id: `r${i}`, label: 'REST', duration: 30 },
+      ]).flat() as Interval[],
+    ], 3),
+    muaySprints8: makeSimple(30, 30, 8, 'SPRINT', 'REST', 3),
+    muaySprints10: makeSimple(45, 15, 10, 'SPRINT', 'REST', 3),
+    muayShadow: makeAdvancedBySequence([
+      ...Array.from({ length: 5 }, (_, i) => [
+        { id: `w${i}`, label: 'ROUND', duration: 3 * 60 },
+        { id: `r${i}`, label: 'REST', duration: 60 },
+      ]).flat() as Interval[],
+    ], 3),
   };
 
   const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
@@ -111,6 +138,7 @@ const QuickPresets: React.FC<QuickPresetsProps> = ({ onApply }) => {
     <div className="space-y-4">
       <Section title="Tabata / HIIT">
         <Btn label="Tabata — Classic" subtitle="20/10 × 8, warmup+cooldown" onClick={handle(seq.tabataClassic)} />
+        <Btn label="Tabata — Double" subtitle="20/10 × 8 × 2, 1:00 rest between" onClick={handle(seq.tabataDouble)} />
         <Btn label="Tabata — A/B" subtitle="20/10 × 8 switching A/B" onClick={handle(seq.tabataAB)} />
         <Btn label="HIIT 30/30 × 10" onClick={handle(seq.hiit3030x10)} />
       </Section>
@@ -129,6 +157,10 @@ const QuickPresets: React.FC<QuickPresetsProps> = ({ onApply }) => {
       <Section title="Muay Thai">
         <Btn label="Pads (5 × 3:00 / 1:00)" onClick={handle(seq.muayPads)} />
         <Btn label="Bag Rounds (10 × 3:00 / 1:00)" onClick={handle(seq.muayBag)} />
+        <Btn label="Clinch (6 × 3:00 / 0:30)" onClick={handle(seq.muayClinch)} />
+        <Btn label="Conditioning Sprints (8 × 0:30 / 0:30)" onClick={handle(seq.muaySprints8)} />
+        <Btn label="Conditioning Sprints (10 × 0:45 / 0:15)" onClick={handle(seq.muaySprints10)} />
+        <Btn label="Shadowboxing (5 × 3:00 / 1:00)" onClick={handle(seq.muayShadow)} />
       </Section>
     </div>
   );
