@@ -13,6 +13,7 @@ import CountdownScreen from './components/CountdownScreen';
 import ThemeToggle from './components/ThemeToggle';
 import SessionCounter from './components/SessionCounter';
 import { SettingsIcon } from './components/icons';
+import A2HSHint from './components/A2HSHint';
 
 const formatWorkTime = (seconds: number) => {
     const totalMinutes = Math.floor(seconds / 60);
@@ -215,6 +216,7 @@ const App: React.FC = () => {
       </div>
 
       {/* Configuration screen replaces SettingsModal */}
+      <A2HSHint />
     </div>
   );
 };
