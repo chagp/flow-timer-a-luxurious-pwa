@@ -49,9 +49,9 @@ const App: React.FC = () => {
   const [showCountdown, setShowCountdown] = useState(false);
   const [pendingSettings, setPendingSettings] = useState<Settings | null>(null);
   
-  const playStartSound = useSound(SOUNDS.start);
-  const playEndSound = useSound(SOUNDS.end);
-  const playCompleteSound = useSound(SOUNDS.complete);
+  const playStartSound = useSound('start');
+  const playEndSound = useSound('end');
+  const playCompleteSound = useSound('complete');
 
   const handleSessionEnd = useCallback((entry: HistoryEntry) => {
     setHistory(prev => [entry, ...prev]);

@@ -1,30 +1,22 @@
-import { useMemo, useCallback } from 'react';
+import { useCallback } from 'react';
+import { playCue, CueType } from '../utils/soundManager';
 
-export const useSound = (url: string, volume = 0.5) => {
-  const audio = useMemo(() => {
-    if (typeof Audio === 'undefined') {
-        return null;
-    }
-    try {
-        const a = new Audio(url);
-        a.volume = volume;
-        a.preload = 'auto'; // Hint to browser to start loading audio
-        return a;
-    } catch (e) {
-        console.error(`Could not create audio for url: ${url}`, e);
-        return null;
-    }
-  }, [url, volume]);
-
+// Backwards-compatible hook. If passed a known string key, map to cue.
+export const useSound = (urlOrKey: string, _volume = 0.5) => {
   const play = useCallback(() => {
-    if (audio) {
-      audio.currentTime = 0;
-      audio.play().catch(err => {
-          // More descriptive error in case playback fails.
-          console.error(`Audio play failed for ${url}:`, err)
-      });
+    const key = urlOrKey as CueType;
+    if (['start','end','complete'].includes(key)) {
+      playCue(key as CueType);
+      return;
     }
-  }, [audio, url]);
-
+    // Fallback: try HTMLAudio for arbitrary URLs
+    try {
+      const a = new Audio(urlOrKey);
+      a.volume = _volume;
+      void a.play();
+    } catch {
+      // ignore
+    }
+  }, [urlOrKey, _volume]);
   return play;
 };
