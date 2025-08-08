@@ -265,15 +265,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
           onChange={(value) => setLocalSettings({ ...localSettings, countdown: value })}
         />
 
-        {/* Quick access button to Presets modal */}
-        <div className="pt-2">
-          <button
-            onClick={() => setIsPresetsOpen(true)}
-            className="w-full px-4 py-3 rounded-lg bg-light-accent dark:bg-dark-accent text-white font-semibold hover:bg-light-accent-hover dark:hover:bg-dark-accent-hover"
-          >
-            Browse Presets
-          </button>
-        </div>
+        {/* Presets access is available via the top tab button only to avoid duplication */}
 
         {/* Quick Presets (removed from inline; use modal instead) */}
 

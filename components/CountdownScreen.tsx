@@ -24,6 +24,7 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({
     setTimeLeft(countdownSeconds);
     const start = Date.now();
     let lastAnnounced = -1;
+    let completed = false;
     const tick = () => {
       const elapsed = Math.floor((Date.now() - start) / 1000);
       const remaining = Math.max(0, countdownSeconds - elapsed);
@@ -33,17 +34,20 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({
         lastAnnounced = remaining;
         playCountdownTick(remaining);
       }
-      if (remaining <= 0) {
+      if (!completed && remaining <= 0) {
+        completed = true;
         // distinct start tone
         playCue('workStart');
         onComplete();
       }
     };
-    // Tick faster to avoid iOS throttling and keep display smooth
-    const id = window.setInterval(tick, 250);
+    // Use rAF to drive updates smoothly, immune to some timer throttling
+    let rafId = 0;
+    const loop = () => { tick(); rafId = window.requestAnimationFrame(loop); };
+    rafId = window.requestAnimationFrame(loop);
     // Initial tick to avoid waiting for first interval
     tick();
-    return () => window.clearInterval(id);
+    return () => window.cancelAnimationFrame(rafId);
   }, [countdownSeconds, onComplete]);
 
   if (countdownSeconds === 0) {
