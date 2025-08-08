@@ -56,3 +56,18 @@ export const TrashIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export const CloseIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
 );
+
+// Lucide icon: sparkles (for presets)
+export const SparklesIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M12 3v2"/>
+    <path d="M5.22 7.22 6.64 8.64"/>
+    <path d="M3 12h2"/>
+    <path d="M5.22 16.78 6.64 15.36"/>
+    <path d="M12 19v2"/>
+    <path d="M18.78 16.78 17.36 15.36"/>
+    <path d="M21 12h-2"/>
+    <path d="M18.78 7.22 17.36 8.64"/>
+    <path d="M8 12a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z"/>
+  </svg>
+);

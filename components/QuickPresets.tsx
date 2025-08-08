@@ -87,6 +87,13 @@ const QuickPresets: React.FC<QuickPresetsProps> = ({ onApply }) => {
         { id: `r${i}`, label: 'REST', duration: 60 },
       ]).flat() as Interval[],
     ], 3),
+    bjjOpenMat30: makeAdvancedRepeat('OPEN MAT', 30 * 60, 1, 3),
+    bjjSharkTank: makeAdvancedBySequence([
+      ...Array.from({ length: 10 }, (_, i) => [
+        { id: `w${i}`, label: 'WORK', duration: 60 },
+        { id: `r${i}`, label: 'TRANSITION', duration: 15 },
+      ]).flat() as Interval[],
+    ], 3),
     muayPads: makeAdvancedBySequence([
       ...Array.from({ length: 5 }, (_, i) => [
         { id: `w${i}`, label: 'ROUND', duration: 3 * 60 },
@@ -153,6 +160,8 @@ const QuickPresets: React.FC<QuickPresetsProps> = ({ onApply }) => {
       <Section title="BJJ">
         <Btn label="Positional Rounds" subtitle="6 × 6:00 / 1:00" onClick={handle(seq.bjjPositional)} />
         <Btn label="Sparring (Rolling)" subtitle="5 × 6:00 / 1:00" onClick={handle(seq.bjjSparring)} />
+        <Btn label="Open Mat Blocks (30:00)" onClick={handle(seq.bjjOpenMat30)} />
+        <Btn label="Shark Tank (10 × 1:00 / 0:15)" onClick={handle(seq.bjjSharkTank)} />
       </Section>
       <Section title="Muay Thai">
         <Btn label="Pads (5 × 3:00 / 1:00)" onClick={handle(seq.muayPads)} />

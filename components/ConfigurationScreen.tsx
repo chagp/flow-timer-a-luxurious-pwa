@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PresetSelector from './PresetSelector';
 import QuickPresets from './QuickPresets';
+import QuickPresetsModal from './QuickPresetsModal';
+import { SparklesIcon } from './icons';
 import SetsStepper from './SetsStepper';
 import TimePicker from './TimePicker';
 import CountdownSelector from './CountdownSelector';
@@ -41,6 +43,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
     savedSettings.mode === TimerMode.Simple ? 'simple' : 'advanced'
   );
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isPresetsOpen, setIsPresetsOpen] = useState(false);
 
   const handleAddInterval = () => {
     const newInterval: Interval = { 
@@ -128,14 +131,11 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
               {TimerMode.Advanced}
             </button>
             <button
-              onClick={() => setActiveView('presets')}
-              className={`p-2 rounded-md font-semibold capitalize transition-colors ${
-                activeView === 'presets'
-                  ? 'bg-light-accent dark:bg-dark-accent text-white dark:text-dark-bg'
-                  : 'hover:bg-white/50 dark:hover:bg-black/20'
-              }`}
+              onClick={() => setIsPresetsOpen(true)}
+              className={`p-2 rounded-md font-semibold capitalize transition-colors hover:bg-white/50 dark:hover:bg-black/20 flex items-center justify-center gap-2`}
+              title="Browse presets"
             >
-              Presets
+              <SparklesIcon className="w-4 h-4" /> Presets
             </button>
           </div>
         </div>
@@ -241,14 +241,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
               </button>
             </div>
           </>
-        ) : (
-          <>
-            <QuickPresets onApply={(s) => {
-              setLocalSettings(s);
-              setActiveView(s.mode === TimerMode.Simple ? 'simple' : 'advanced');
-            }} />
-          </>
-        )}
+        ) : null}
 
         {/* Countdown Timer Section */}
         <CountdownSelector
@@ -289,6 +282,17 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
         onClose={() => setIsHistoryOpen(false)}
         history={history}
         onClearHistory={onClearHistory}
+      />
+
+      {/* Presets Modal */}
+      <QuickPresetsModal
+        isOpen={isPresetsOpen}
+        onClose={() => setIsPresetsOpen(false)}
+        onApply={(s) => {
+          setLocalSettings(s);
+          setSavedSettings(s);
+          setActiveView(s.mode === TimerMode.Simple ? 'simple' : 'advanced');
+        }}
       />
     </div>
   );
