@@ -63,6 +63,15 @@ const App: React.FC = () => {
   const [timerState, timerActions] = useTimer(settings, handleSessionEnd, handleSound);
   // Determine session mode using timer's phase
   const mode: 'work' | 'break' = timerState.isWorkPhase ? 'work' : 'break';
+  // Subtle background state overlays (slightly brighter)
+  const isWorkActive = timerState.isActive && mode === 'work';
+  const isBreakActive = timerState.isActive && mode === 'break';
+  const workGradient = theme === 'dark'
+    ? 'radial-gradient(120% 120% at 50% 20%, rgba(99,230,190,0.20) 0%, rgba(99,230,190,0.10) 40%, rgba(0,0,0,0) 70%)'
+    : 'radial-gradient(120% 120% at 50% 20%, rgba(34,197,94,0.20) 0%, rgba(34,197,94,0.10) 40%, rgba(255,255,255,0) 70%)';
+  const breakGradient = theme === 'dark'
+    ? 'radial-gradient(120% 120% at 50% 20%, rgba(239,68,68,0.20) 0%, rgba(239,68,68,0.10) 40%, rgba(0,0,0,0) 70%)'
+    : 'radial-gradient(120% 120% at 50% 20%, rgba(239,68,68,0.20) 0%, rgba(239,68,68,0.10) 40%, rgba(255,255,255,0) 70%)';
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -131,6 +140,21 @@ const App: React.FC = () => {
   }
   return (
     <div className={`relative flex flex-col items-center justify-center min-h-screen p-4 font-sans text-light-text dark:text-dark-text transition-colors duration-500`}>  
+      {/* Background overlays behind content; do not block interactions */}
+      <motion.div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{ background: workGradient }}
+        initial={false}
+        animate={{ opacity: isWorkActive ? 1 : 0 }}
+        transition={{ duration: 0.4 }}
+      />
+      <motion.div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{ background: breakGradient }}
+        initial={false}
+        animate={{ opacity: isBreakActive ? 1 : 0 }}
+        transition={{ duration: 0.4 }}
+      />
       <div className="absolute top-10 left-4 right-4 flex justify-between items-center">
         <motion.button
             onClick={() => setShowConfig(true)}
