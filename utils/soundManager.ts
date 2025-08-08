@@ -84,4 +84,11 @@ export function ensureAudioReady() {
   }
 }
 
+export function playCountdownTick(n: number) {
+  // Single, distinct tone per second
+  if (n === 3) beep(520, 90, 0.16);
+  if (n === 2) beep(660, 90, 0.16);
+  if (n === 1) beep(820, 120, 0.18);
+}
+
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { playCue } from '../utils/soundManager';
+import { playCue, playCountdownTick } from '../utils/soundManager';
 
 interface CountdownScreenProps {
   countdownSeconds: number;
@@ -23,13 +23,15 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({
 
     setTimeLeft(countdownSeconds);
     const start = Date.now();
+    let lastAnnounced = -1;
     const tick = () => {
       const elapsed = Math.floor((Date.now() - start) / 1000);
       const remaining = Math.max(0, countdownSeconds - elapsed);
       setTimeLeft(remaining);
-      // Play countdown tones on 3,2,1
-      if (remaining > 0 && remaining <= 3) {
-        playCue('threeTwoOne');
+      // Play exactly once per remaining second
+      if (remaining > 0 && remaining <= 3 && remaining !== lastAnnounced) {
+        lastAnnounced = remaining;
+        playCountdownTick(remaining);
       }
       if (remaining <= 0) {
         // distinct start tone
