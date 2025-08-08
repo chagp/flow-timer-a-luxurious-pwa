@@ -222,15 +222,15 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
               <label className="font-semibold">Intervals</label>
               <div className="space-y-2">
                 {localSettings.advanced.intervals.map((interval, index) => (
-                  <div key={interval.id} className="grid grid-cols-12 items-center gap-2 bg-light-subtle-bg dark:bg-dark-subtle-bg rounded-xl p-2">
-                    <div className="col-span-3 text-xs text-light-text/70 dark:text-dark-text/70">#{index + 1}</div>
+                  <div key={interval.id} className="grid grid-cols-12 items-center gap-1 bg-light-subtle-bg dark:bg-dark-subtle-bg rounded-xl p-2">
+                    <div className="col-span-1 text-xs text-light-text/70 dark:text-dark-text/70">#{index + 1}</div>
                     <input
                       type="text"
                       value={interval.label}
                       onChange={e => handleIntervalChange(interval.id, 'label', e.target.value)}
-                      className="col-span-5 px-2 py-2 rounded-lg bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent outline-none text-sm"
+                      className="col-span-6 px-2 py-2 rounded-lg bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent outline-none text-sm"
                     />
-                    <div className="col-span-3">
+                    <div className="col-span-4 pr-1">
                       <TimePicker
                         minutes={Math.floor(interval.duration / 60)}
                         seconds={interval.duration % 60}
