@@ -38,9 +38,19 @@ const SecondsWheelPicker: React.FC<SecondsWheelPickerProps> = ({
     }
   }, [value, getScrollTop, isDragging]);
 
+  // Smooth snapping with CSS scroll snap + settle correction
+  const idleTimer = useRef<number | null>(null);
   const handleScroll = useCallback(() => {
-    // Only update value on scroll end, not during scroll for smoother experience
-  }, []);
+    if (idleTimer.current) window.clearTimeout(idleTimer.current);
+    idleTimer.current = window.setTimeout(() => {
+      if (!containerRef.current) return;
+      const newValue = getValueFromScrollTop(containerRef.current.scrollTop);
+      // Snap exactly to the nearest item
+      containerRef.current.scrollTo({ top: getScrollTop(newValue), behavior: 'smooth' });
+      onChange(newValue);
+      setIsDragging(false);
+    }, 120);
+  }, [getScrollTop, getValueFromScrollTop, onChange]);
 
   const handleScrollEnd = useCallback(() => {
     if (containerRef.current) {
@@ -75,7 +85,7 @@ const SecondsWheelPicker: React.FC<SecondsWheelPickerProps> = ({
       <div
         ref={containerRef}
         className="overflow-y-auto scrollbar-hide relative"
-        style={{ height: containerHeight, WebkitOverflowScrolling: 'touch', scrollBehavior: 'auto' }}
+        style={{ height: containerHeight, WebkitOverflowScrolling: 'touch', scrollBehavior: 'auto', scrollSnapType: 'y mandatory' as any }}
         onScroll={handleScroll}
         onTouchStart={() => setIsDragging(true)}
         onTouchEnd={handleScrollEnd}

@@ -12,6 +12,7 @@ interface TimerState {
   totalSets: number;
   totalWorkTime: number;
   realTimeElapsed: number;
+  isWorkPhase: boolean;
 }
 
 interface TimerActions {
@@ -103,11 +104,14 @@ export const useTimer = (
   const advanceToNext = useCallback(() => {
     const lastSession = sequence[currentIntervalIndex];
     if (lastSession) {
+      const totalMs = (lastSession.duration || 0) * 1000;
+      const elapsedMs = Math.max(0, Math.min(totalMs, totalMs - timeRemaining));
+      const elapsedSeconds = Math.round(elapsedMs / 1000);
       onSessionEnd({
         id: new Date().toISOString(),
         date: new Date().toLocaleString(),
         label: lastSession.label,
-        duration: lastSession.duration,
+        duration: elapsedSeconds,
       });
     }
 
@@ -123,6 +127,7 @@ export const useTimer = (
       setIsActive(false);
       setIsFinished(true);
       if (realTimeIntervalRef.current) clearInterval(realTimeIntervalRef.current);
+      realTimeIntervalRef.current = null;
       playSound('complete');
     } else {
       setCurrentIntervalIndex(nextIntervalIndex);
@@ -130,7 +135,7 @@ export const useTimer = (
       setTimeRemaining(sequence[nextIntervalIndex].duration * 1000);
       playSound('end');
     }
-  }, [currentIntervalIndex, currentSet, onSessionEnd, playSound, sequence, totalSets]);
+  }, [currentIntervalIndex, currentSet, onSessionEnd, playSound, sequence, totalSets, timeRemaining]);
 
   useEffect(() => {
     if (isActive && !isFinished) {
@@ -159,7 +164,7 @@ export const useTimer = (
     if (isFinished) {
       console.log('Timer was finished, resetting sequence');
       resetSequence();
-      return;
+      // fall-through to start immediately
     }
 
     if (realTimeIntervalRef.current === null) {
@@ -169,7 +174,7 @@ export const useTimer = (
       }, 1000);
     }
 
-    if (timeRemaining > 0) {
+    if (timeRemaining > 0 || isFinished) {
       console.log('Starting timer - setting isActive to true');
       setIsActive(true);
       // Try to play sound but don't let it block timer start
@@ -190,6 +195,9 @@ export const useTimer = (
         setTimeRemaining(sequence[currentIntervalIndex].duration * 1000);
     }
     setIsActive(false);
+    if (realTimeIntervalRef.current) clearInterval(realTimeIntervalRef.current);
+    realTimeIntervalRef.current = null;
+    setRealTimeElapsed(0);
   };
 
   const skip = () => {
@@ -200,9 +208,18 @@ export const useTimer = (
   const currentInterval = sequence[currentIntervalIndex];
   const totalDuration = currentInterval?.duration * 1000 || 0;
   const currentLabel = isFinished ? 'DONE' : currentInterval?.label || 'READY';
+  const isWorkPhase = (() => {
+    if (isFinished) return false;
+    if (!currentInterval) return false;
+    if (settings.mode === TimerMode.Simple) {
+      return currentInterval.label === settings.simple.workLabel;
+    }
+    // Heuristic for advanced mode: even-indexed intervals are work
+    return currentIntervalIndex % 2 === 0;
+  })();
   
   return [
-    { timeRemaining, totalDuration, isActive, isFinished, currentSet, currentLabel, totalSets, totalWorkTime, realTimeElapsed },
+    { timeRemaining, totalDuration, isActive, isFinished, currentSet, currentLabel, totalSets, totalWorkTime, realTimeElapsed, isWorkPhase },
     { play, pause, reset, skip, resetSequence },
   ];
 };

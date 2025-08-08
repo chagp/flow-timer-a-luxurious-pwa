@@ -61,9 +61,8 @@ const App: React.FC = () => {
   }, [playStartSound, playEndSound, playCompleteSound]);
 
   const [timerState, timerActions] = useTimer(settings, handleSessionEnd, handleSound);
-  // Determine session mode for display
-  const mode: 'work' | 'break' = (settings.mode === TimerMode.Simple && timerState.currentLabel === settings.simple.workLabel)
-    ? 'work' : 'break';
+  // Determine session mode using timer's phase
+  const mode: 'work' | 'break' = timerState.isWorkPhase ? 'work' : 'break';
 
   useEffect(() => {
     if (theme === 'dark') {

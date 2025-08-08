@@ -1,0 +1,40 @@
+.wheelPicker {
+  position: relative;
+  width: 100%;
+  max-width: 240px;
+  margin: 0 auto;
+  overflow: hidden;
+  backface-visibility: hidden;
+  contain: content;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0));
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0));
+}
+
+.wheelPicker__list {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: y mandatory;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}
+.wheelPicker__list::-webkit-scrollbar {
+  display: none;
+}
+
+.wheelPicker__item {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  scroll-snap-align: center;
+  will-change: transform, opacity;
+  transition: transform 140ms cubic-bezier(0.2, 0.6, 0.2, 1), opacity 140ms linear;
+  transform-origin: center center;
+  backface-visibility: hidden;
+}
+
+.wheelPicker--reduced .wheelPicker__item {
+  transition: none;
+}
+
+

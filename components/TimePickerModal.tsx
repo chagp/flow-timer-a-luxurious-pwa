@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import ScrollableWheelPicker from './ScrollableWheelPicker';
-import SecondsWheelPicker from './SecondsWheelPicker';
+import WheelPicker from './WheelPicker';
 
 interface TimePickerModalProps {
   isOpen: boolean;
@@ -57,7 +56,7 @@ const TimePickerModal: React.FC<TimePickerModalProps> = ({
               Cancel
             </button>
             <h3 className="font-semibold text-light-text dark:text-dark-text">
-              Start Delay
+              {title}
             </h3>
             <button
               onClick={handleConfirm}
@@ -76,13 +75,14 @@ const TimePickerModal: React.FC<TimePickerModalProps> = ({
               <div className="text-sm text-light-text/60 dark:text-dark-text/60 mb-2">
                 Minutes
               </div>
-              <ScrollableWheelPicker
+              <WheelPicker
+                items={Array.from({ length: 61 }, (_, i) => i)}
                 value={selectedMinutes}
-                min={0}
-                max={60}
-                onChange={setSelectedMinutes}
+                onChange={(v) => setSelectedMinutes(v as number)}
                 itemHeight={50}
-                visibleItems={5}
+                visibleRows={5}
+                itemToString={(n) => String(n).padStart(2, '0')}
+                haptics="auto"
               />
             </div>
 
@@ -96,11 +96,14 @@ const TimePickerModal: React.FC<TimePickerModalProps> = ({
               <div className="text-sm text-light-text/60 dark:text-dark-text/60 mb-2">
                 Seconds
               </div>
-              <SecondsWheelPicker
+              <WheelPicker
+                items={Array.from({ length: 12 }, (_, i) => i * 5)}
                 value={selectedSeconds}
-                onChange={setSelectedSeconds}
+                onChange={(v) => setSelectedSeconds(v as number)}
                 itemHeight={50}
-                visibleItems={5}
+                visibleRows={5}
+                itemToString={(n) => String(n).padStart(2, '0')}
+                haptics="auto"
               />
             </div>
           </div>

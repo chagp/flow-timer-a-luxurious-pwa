@@ -43,9 +43,17 @@ const ScrollableWheelPicker: React.FC<ScrollableWheelPickerProps> = ({
     }
   }, [value, getScrollTop, isDragging]);
 
+  const idleTimer = useRef<number | null>(null);
   const handleScroll = useCallback(() => {
-    // Only update value on scroll end, not during scroll for smoother experience
-  }, []);
+    if (idleTimer.current) window.clearTimeout(idleTimer.current);
+    idleTimer.current = window.setTimeout(() => {
+      if (!containerRef.current) return;
+      const newValue = getValueFromScrollTop(containerRef.current.scrollTop);
+      containerRef.current.scrollTo({ top: getScrollTop(newValue), behavior: 'smooth' });
+      onChange(newValue);
+      setIsDragging(false);
+    }, 120);
+  }, [getScrollTop, getValueFromScrollTop, onChange]);
 
   const handleScrollEnd = useCallback(() => {
     if (containerRef.current) {
@@ -83,7 +91,8 @@ const ScrollableWheelPicker: React.FC<ScrollableWheelPickerProps> = ({
         style={{ 
           height: containerHeight,
           WebkitOverflowScrolling: 'touch',
-          scrollBehavior: 'auto'
+          scrollBehavior: 'auto',
+          scrollSnapType: 'y mandatory' as any,
         }}
         onScroll={handleScroll}
         onTouchStart={() => setIsDragging(true)}
