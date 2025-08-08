@@ -8,6 +8,7 @@ import { DEFAULT_SETTINGS, SOUNDS } from './constants';
 import TimerDisplay from './components/TimerDisplay';
 import Controls from './components/Controls';
 import ConfigurationScreen from './components/ConfigurationScreen';
+import AuthGate from './components/AuthGate';
 import CountdownScreen from './components/CountdownScreen';
 import ThemeToggle from './components/ThemeToggle';
 import SessionCounter from './components/SessionCounter';
@@ -42,6 +43,7 @@ const App: React.FC = () => {
   const [settings, setSettings] = useLocalStorage<Settings>('flow-timer-settings', DEFAULT_SETTINGS);
   const [history, setHistory] = useLocalStorage<HistoryEntry[]>('flow-timer-history', []);
   const [theme, setTheme] = useLocalStorage<Theme>('flow-timer-theme', 'dark');
+  const [isAuthed, setIsAuthed] = useState<boolean>(false);
   const [showConfig, setShowConfig] = useState(false);
   const [showCountdown, setShowCountdown] = useState(false);
   const [pendingSettings, setPendingSettings] = useState<Settings | null>(null);
@@ -87,6 +89,18 @@ const App: React.FC = () => {
 
   const clearHistory = () => {
       setHistory([]);
+  }
+
+  if (!isAuthed) {
+    const url = (import.meta as any).env?.VITE_SUPABASE_URL || (window as any).SUPABASE_URL;
+    const key = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || (window as any).SUPABASE_ANON_KEY;
+    return (
+      <AuthGate
+        supabaseUrl={url}
+        supabaseAnonKey={key}
+        onAuthenticated={() => setIsAuthed(true)}
+      />
+    );
   }
 
   if (showCountdown && pendingSettings) {
