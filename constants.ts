@@ -17,7 +17,7 @@ export const DEFAULT_SETTINGS: Settings = {
       { id: '3', label: 'REVIEW', duration: 5 * 60 },
     ],
   },
-  countdown: 3, // 3 second countdown by default
+  countdown: 0, // default start delay is 0s
 };
 
 // Using reliable, CORS-friendly audio sources from pixabay.com to prevent playback errors.

@@ -135,7 +135,7 @@ const CountdownSelector: React.FC<CountdownSelectorProps> = ({ value, onChange }
               : 'bg-light-subtle-bg dark:bg-dark-subtle-bg text-light-text dark:text-dark-text hover:bg-light-border dark:hover:bg-dark-border'
           }`}
         >
-          {isCustomValue ? `Custom (${value}s)` : 'Custom'}
+          {isCustomValue && value > 0 ? `Custom (${value}s)` : 'Custom'}
         </button>
       </div>
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PresetSelector from './PresetSelector';
+import QuickPresets from './QuickPresets';
 import SetsStepper from './SetsStepper';
 import TimePicker from './TimePicker';
 import CountdownSelector from './CountdownSelector';
@@ -221,6 +222,12 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
           value={localSettings.countdown}
           onChange={(value) => setLocalSettings({ ...localSettings, countdown: value })}
         />
+
+        {/* Quick Presets */}
+        <div className="pt-2 border-t border-light-border dark:border-dark-border">
+          <h2 className="text-xl font-semibold mb-2">Quick Presets</h2>
+          <QuickPresets onApply={setLocalSettings} />
+        </div>
 
         <div className="text-center py-4 border-t border-light-border dark:border-dark-border text-light-text dark:text-dark-text">
           <span className="text-sm text-light-text/60 dark:text-dark-text/60">Total Time:</span>
