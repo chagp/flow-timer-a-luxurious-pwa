@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PresetSelector from './PresetSelector';
 import QuickPresets from './QuickPresets';
 import QuickPresetsModal from './QuickPresetsModal';
-import { SparklesIcon } from './icons';
+import { SparklesIcon, SimpleIcon, AdvancedIcon } from './icons';
 import SetsStepper from './SetsStepper';
 import TimePicker from './TimePicker';
 import CountdownSelector from './CountdownSelector';
@@ -117,26 +117,26 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
                 setLocalSettings({ ...localSettings, mode: TimerMode.Simple });
                 setActiveView('simple');
               }}
-              className={`p-2 rounded-md font-semibold capitalize transition-colors ${
+              className={`p-2 rounded-md font-semibold capitalize transition-colors flex items-center justify-center gap-2 ${
                 activeView === 'simple'
                   ? 'bg-light-accent dark:bg-dark-accent text-white dark:text-dark-bg'
                   : 'hover:bg-white/50 dark:hover:bg-black/20'
               }`}
             >
-              {TimerMode.Simple}
+              <SimpleIcon className="w-4 h-4" /> {TimerMode.Simple}
             </button>
             <button
               onClick={() => {
                 setLocalSettings({ ...localSettings, mode: TimerMode.Advanced });
                 setActiveView('advanced');
               }}
-              className={`p-2 rounded-md font-semibold capitalize transition-colors ${
+              className={`p-2 rounded-md font-semibold capitalize transition-colors flex items-center justify-center gap-2 ${
                 activeView === 'advanced'
                   ? 'bg-light-accent dark:bg-dark-accent text-white dark:text-dark-bg'
                   : 'hover:bg-white/50 dark:hover:bg-black/20'
               }`}
             >
-              {TimerMode.Advanced}
+              <AdvancedIcon className="w-4 h-4" /> {TimerMode.Advanced}
             </button>
             <button
               onClick={() => setIsPresetsOpen(true)}
@@ -240,10 +240,10 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
                     </div>
                     <button
                       onClick={() => handleRemoveInterval(interval.id)}
-                      className="col-span-1 text-red-500 hover:text-red-700 flex items-center justify-center"
+                      className="col-span-1 text-red-400 hover:text-red-500/90 flex items-center justify-center rounded-md bg-red-400/10 hover:bg-red-400/15 transition-colors"
                       title="Remove"
                     >
-                      <TrashIcon className="w-5 h-5" />
+                      <TrashIcon className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
@@ -305,6 +305,14 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
               setActiveView(s.mode === TimerMode.Simple ? 'simple' : 'advanced');
               // Store meta in session to show description; read below.
               sessionStorage.setItem('lastPresetMeta', JSON.stringify(meta));
+            }}
+            onStartPreset={(s, meta) => {
+              setLocalSettings({ ...s });
+              setSavedSettings(s);
+              setActiveView(s.mode === TimerMode.Simple ? 'simple' : 'advanced');
+              sessionStorage.setItem('lastPresetMeta', JSON.stringify(meta));
+              // Kick off the countdown + start via the parent flow
+              onStart(s);
             }}
       />
     </div>

@@ -45,7 +45,11 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-light-bg dark:bg-dark-bg flex flex-col items-center justify-center z-50"
+      className="fixed inset-0 flex flex-col items-center justify-center z-50"
+      style={{
+        background:
+          'radial-gradient(120% 120% at 50% 20%, rgba(239,68,68,0.15) 0%, rgba(239,68,68,0.08) 30%, rgba(0,0,0,0) 70%)',
+      }}
     >
       <button
         onClick={onCancel}
@@ -65,7 +69,11 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.8, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-          className="text-9xl font-bold text-light-text dark:text-dark-text mb-8"
+          className="text-9xl font-bold mb-8"
+          style={{
+            color: 'white',
+            textShadow: '0 2px 12px rgba(0,0,0,0.4)'
+          }}
         >
           {timeLeft}
         </motion.div>
@@ -74,6 +82,21 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({
           Starting in {timeLeft} second{timeLeft !== 1 ? 's' : ''}...
         </div>
       </div>
+      {/* Animated overlay from red to green as countdown approaches 0 */}
+      <motion.div
+        key={`bg-${timeLeft}`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.4, ease: 'easeInOut' }}
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            timeLeft > 2
+              ? 'radial-gradient(120% 120% at 50% 20%, rgba(239,68,68,0.18) 0%, rgba(239,68,68,0.10) 40%, rgba(0,0,0,0) 70%)'
+              : 'radial-gradient(120% 120% at 50% 20%, rgba(34,197,94,0.18) 0%, rgba(34,197,94,0.10) 40%, rgba(0,0,0,0) 70%)',
+        }}
+      />
     </motion.div>
   );
 };
