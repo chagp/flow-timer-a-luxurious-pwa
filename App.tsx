@@ -63,6 +63,14 @@ const App: React.FC = () => {
   const [timerState, timerActions] = useTimer(settings, handleSessionEnd, handleSound);
   // Determine session mode using timer's phase
   const mode: 'work' | 'break' = timerState.isWorkPhase ? 'work' : 'break';
+  const isWorkActive = timerState.isActive && mode === 'work';
+  const isBreakActive = timerState.isActive && mode === 'break';
+  const workGradient = theme === 'dark'
+    ? 'radial-gradient(120% 120% at 50% 20%, rgba(99,230,190,0.12) 0%, rgba(99,230,190,0.06) 40%, rgba(0,0,0,0) 70%)'
+    : 'radial-gradient(120% 120% at 50% 20%, rgba(34,197,94,0.12) 0%, rgba(34,197,94,0.06) 40%, rgba(255,255,255,0) 70%)';
+  const breakGradient = theme === 'dark'
+    ? 'radial-gradient(120% 120% at 50% 20%, rgba(239,68,68,0.12) 0%, rgba(239,68,68,0.06) 40%, rgba(0,0,0,0) 70%)'
+    : 'radial-gradient(120% 120% at 50% 20%, rgba(239,68,68,0.12) 0%, rgba(239,68,68,0.06) 40%, rgba(255,255,255,0) 70%)';
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -131,7 +139,23 @@ const App: React.FC = () => {
   }
   return (
     <div className={`relative flex flex-col items-center justify-center min-h-screen p-4 font-sans text-light-text dark:text-dark-text transition-colors duration-500`}>  
-      <div className="absolute top-10 left-4 right-4 flex justify-between items-center">
+      {/* Subtle background state overlays for far-view status */}
+      <motion.div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{ background: workGradient }}
+        initial={false}
+        animate={{ opacity: isWorkActive ? 1 : 0 }}
+        transition={{ duration: 0.5 }}
+      />
+      <motion.div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{ background: breakGradient }}
+        initial={false}
+        animate={{ opacity: isBreakActive ? 1 : 0 }}
+        transition={{ duration: 0.5 }}
+      />
+
+      <div className="relative z-10 absolute top-10 left-4 right-4 flex justify-between items-center">
         <motion.button
             onClick={() => setShowConfig(true)}
             className="p-2 rounded-full bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border"
@@ -144,7 +168,7 @@ const App: React.FC = () => {
         <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
       </div>
       
-      <main className="flex flex-col items-center justify-center w-full max-w-md mx-auto text-center gap-8">
+      <main className="relative z-10 flex flex-col items-center justify-center w-full max-w-md mx-auto text-center gap-8">
         <TimerDisplay 
             timeRemaining={timerState.timeRemaining}
             totalDuration={timerState.totalDuration}
@@ -169,7 +193,7 @@ const App: React.FC = () => {
         />
       </main>
 
-      <div className="absolute bottom-10 left-4 right-4 flex justify-between items-center font-mono text-base sm:text-lg text-light-text dark:text-dark-text">
+      <div className="relative z-10 absolute bottom-10 left-4 right-4 flex justify-between items-center font-mono text-base sm:text-lg text-light-text dark:text-dark-text">
         <span>Work: {formatWorkTime(timerState.totalWorkTime)}</span>
         <span>Total: {formatRealTime(timerState.realTimeElapsed)}</span>
       </div>
