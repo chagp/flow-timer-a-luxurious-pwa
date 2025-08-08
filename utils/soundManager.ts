@@ -75,4 +75,13 @@ export function playCue(type: CueType) {
   }
 }
 
+export function ensureAudioReady() {
+  try {
+    const ctx = getCtx();
+    if (ctx.state !== 'running') void ctx.resume();
+  } catch {
+    // ignore
+  }
+}
+
 

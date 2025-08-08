@@ -96,7 +96,8 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
 
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg p-2 flex items-center justify-center">
-      <div className="bg-light-card dark:bg-dark-card text-light-text dark:text-dark-text p-4 max-w-md w-full space-y-4 rounded-2xl shadow-xl">
+      <div className="bg-light-card dark:bg-dark-card text-light-text dark:text-dark-text p-4 pt-16 max-w-md w-full space-y-4 rounded-2xl shadow-xl relative">
+        {/* Keep action icons comfortably below device chrome */}
         {/* Top preset selector removed to save space */}
 
         {/* Timer Mode Toggle with History Button */}

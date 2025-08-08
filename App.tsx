@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useTimer } from './hooks/useTimer';
 import { useSound } from './hooks/useSound';
+import { ensureAudioReady, playCue } from './utils/soundManager';
 import { Settings, HistoryEntry, Theme, TimerMode } from './types';
 import { DEFAULT_SETTINGS, SOUNDS } from './constants';
 import TimerDisplay from './components/TimerDisplay';
@@ -87,6 +88,13 @@ const App: React.FC = () => {
   const toggleTheme = () => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
+
+  useEffect(() => {
+    // Warm up AudioContext after first interaction for PWA/iOS
+    const onInteract = () => { ensureAudioReady(); window.removeEventListener('pointerdown', onInteract); };
+    window.addEventListener('pointerdown', onInteract, { passive: true });
+    return () => window.removeEventListener('pointerdown', onInteract);
+  }, []);
 
   const clearHistory = () => {
       setHistory([]);
