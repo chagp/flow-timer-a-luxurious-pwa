@@ -44,6 +44,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
   );
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isPresetsOpen, setIsPresetsOpen] = useState(false);
+  const [presetMeta, setPresetMeta] = useState<{ title: string; subtitle?: string } | null>(null);
 
   const handleAddInterval = () => {
     const newInterval: Interval = { 
@@ -85,6 +86,13 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
   useEffect(() => {
     setLocalSettings(savedSettings);
   }, [savedSettings]);
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem('lastPresetMeta');
+      if (raw) setPresetMeta(JSON.parse(raw));
+    } catch { /* ignore */ }
+  }, []);
 
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg p-2 flex items-center justify-center">
@@ -187,6 +195,16 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
           </>
         ) : activeView === 'advanced' ? (
           <>
+            {/* Selected preset description (if any) */}
+            {presetMeta && (
+              <div className="mb-2 p-2 rounded-lg bg-light-subtle-bg dark:bg-dark-subtle-bg text-left">
+                <div className="font-semibold text-light-text dark:text-dark-text">{presetMeta.title}</div>
+                {presetMeta.subtitle && (
+                  <div className="text-xs text-light-text/70 dark:text-dark-text/70">{presetMeta.subtitle}</div>
+                )}
+              </div>
+            )}
+
             <div className="space-y-4 text-center">
               <label className="text-2xl font-bold">Rounds</label>
               <SetsStepper
@@ -202,40 +220,37 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
 
             <div className="space-y-3">
               <label className="font-semibold">Intervals</label>
-              {localSettings.advanced.intervals.map((interval, index) => (
-                <div key={interval.id} className="p-3 bg-light-subtle-bg dark:bg-dark-subtle-bg rounded-lg space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold">Interval {index + 1}</span>
-                    <button 
-                      onClick={() => handleRemoveInterval(interval.id)} 
-                      className="text-red-500 hover:text-red-700"
+              <div className="space-y-2">
+                {localSettings.advanced.intervals.map((interval, index) => (
+                  <div key={interval.id} className="grid grid-cols-12 items-center gap-2 bg-light-subtle-bg dark:bg-dark-subtle-bg rounded-xl p-2">
+                    <div className="col-span-3 text-xs text-light-text/70 dark:text-dark-text/70">#{index + 1}</div>
+                    <input
+                      type="text"
+                      value={interval.label}
+                      onChange={e => handleIntervalChange(interval.id, 'label', e.target.value)}
+                      className="col-span-5 px-2 py-2 rounded-lg bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent outline-none text-sm"
+                    />
+                    <div className="col-span-3">
+                      <TimePicker
+                        minutes={Math.floor(interval.duration / 60)}
+                        seconds={interval.duration % 60}
+                        label="Duration"
+                        onChange={(m, s) => handleIntervalChange(interval.id, 'duration', m * 60 + s)}
+                      />
+                    </div>
+                    <button
+                      onClick={() => handleRemoveInterval(interval.id)}
+                      className="col-span-1 text-red-500 hover:text-red-700 flex items-center justify-center"
+                      title="Remove"
                     >
-                      <TrashIcon className="w-5 h-5"/>
+                      <TrashIcon className="w-5 h-5" />
                     </button>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Label</label>
-                    <input 
-                      type="text" 
-                      value={interval.label} 
-                      onChange={e => handleIntervalChange(interval.id, 'label', e.target.value)} 
-                      className="w-full p-2 rounded-lg bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent outline-none" 
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Duration</label>
-                    <TimePicker
-                      minutes={Math.floor(interval.duration / 60)}
-                      seconds={interval.duration % 60}
-                      label={`${interval.label} Duration`}
-                      onChange={(m, s) => handleIntervalChange(interval.id, 'duration', m * 60 + s)}
-                    />
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
               <button 
                 onClick={handleAddInterval} 
-                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg border-2 border-dashed border-light-accent dark:border-dark-accent text-light-accent dark:text-dark-accent hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 transition-colors"
+                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg border border-dashed border-light-accent dark:border-dark-accent text-light-accent dark:text-dark-accent hover:bg-light-accent/10 dark:hover:bg-dark-accent/10 transition-colors"
               >
                 <PlusIcon/> Add Interval
               </button>
@@ -249,11 +264,7 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
           onChange={(value) => setLocalSettings({ ...localSettings, countdown: value })}
         />
 
-        {/* Quick Presets */}
-        <div className="pt-2 border-t border-light-border dark:border-dark-border">
-          <h2 className="text-xl font-semibold mb-2">Quick Presets</h2>
-          <QuickPresets onApply={setLocalSettings} />
-        </div>
+        {/* Quick Presets (removed from inline; use modal instead) */}
 
         <div className="text-center py-4 border-t border-light-border dark:border-dark-border text-light-text dark:text-dark-text">
           <span className="text-sm text-light-text/60 dark:text-dark-text/60">Total Time:</span>
@@ -285,14 +296,16 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
       />
 
       {/* Presets Modal */}
-      <QuickPresetsModal
+          <QuickPresetsModal
         isOpen={isPresetsOpen}
         onClose={() => setIsPresetsOpen(false)}
-        onApply={(s) => {
-          setLocalSettings(s);
-          setSavedSettings(s);
-          setActiveView(s.mode === TimerMode.Simple ? 'simple' : 'advanced');
-        }}
+            onApply={(s, meta) => {
+              setLocalSettings({ ...s, simple: { ...s.simple }, advanced: { ...s.advanced } });
+              setSavedSettings(s);
+              setActiveView(s.mode === TimerMode.Simple ? 'simple' : 'advanced');
+              // Store meta in session to show description; read below.
+              sessionStorage.setItem('lastPresetMeta', JSON.stringify(meta));
+            }}
       />
     </div>
   );
