@@ -21,19 +21,20 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({
     }
 
     setTimeLeft(countdownSeconds);
-    
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          onComplete();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
+    const start = Date.now();
+    const tick = () => {
+      const elapsed = Math.floor((Date.now() - start) / 1000);
+      const remaining = Math.max(0, countdownSeconds - elapsed);
+      setTimeLeft(remaining);
+      if (remaining <= 0) {
+        onComplete();
+      }
+    };
+    // Tick faster to avoid iOS throttling and keep display smooth
+    const id = window.setInterval(tick, 250);
+    // Initial tick to avoid waiting for first interval
+    tick();
+    return () => window.clearInterval(id);
   }, [countdownSeconds, onComplete]);
 
   if (countdownSeconds === 0) {

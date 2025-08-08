@@ -144,32 +144,32 @@ const QuickPresets: React.FC<QuickPresetsProps> = ({ onApply }) => {
   return (
     <div className="space-y-4">
       <Section title="Tabata / HIIT">
-        <Btn label="Tabata — Classic" subtitle="20/10 × 8, warmup+cooldown" onClick={handle(seq.tabataClassic, { title: 'Tabata — Classic', subtitle: '20/10 × 8, warmup+cooldown' })} />
-        <Btn label="Tabata — Double" subtitle="20/10 × 8 × 2, 1:00 rest between" onClick={handle(seq.tabataDouble, { title: 'Tabata — Double', subtitle: '20/10 × 8 × 2, 1:00 rest between' })} />
-        <Btn label="Tabata — A/B" subtitle="20/10 × 8 switching A/B" onClick={handle(seq.tabataAB, { title: 'Tabata — A/B', subtitle: '20/10 × 8 switching A/B' })} />
-        <Btn label="HIIT 30/30 × 10" onClick={handle(seq.hiit3030x10, { title: 'HIIT 30/30 × 10' })} />
+        <Btn label="Tabata — Classic" subtitle="20/10 × 8, warmup+cooldown" onClick={handle(seq.tabataClassic, { title: 'Tabata — Classic', subtitle: '20s all‑out, 10s rest × 8 (4:00). Optional 2:00 warmup + 2:00 cooldown.' })} />
+        <Btn label="Tabata — Double" subtitle="20/10 × 8 × 2, 1:00 rest between" onClick={handle(seq.tabataDouble, { title: 'Tabata — Double', subtitle: 'Two Tabata blocks back‑to‑back (20/10 × 8) with 1:00 rest between blocks.' })} />
+        <Btn label="Tabata — A/B" subtitle="20/10 × 8 switching A/B" onClick={handle(seq.tabataAB, { title: 'Tabata — A/B', subtitle: 'Alternate movements each work interval (odd = A, even = B). 20s work, 10s rest × 8.' })} />
+        <Btn label="HIIT 30/30 × 10" onClick={handle(seq.hiit3030x10, { title: 'HIIT 30/30 × 10', subtitle: 'Balanced work/rest intervals, great for conditioning. 30s hard, 30s easy × 10.' })} />
       </Section>
       <Section title="CrossFit Timers">
-        <Btn label="AMRAP 12" onClick={handle(seq.amrap12, { title: 'AMRAP 12', subtitle: '12:00 continuous' })} />
-        <Btn label="AMRAP 20" onClick={handle(seq.amrap20, { title: 'AMRAP 20', subtitle: '20:00 continuous' })} />
-        <Btn label="EMOM 10" onClick={handle(seq.emom10, { title: 'EMOM 10', subtitle: 'Every minute × 10' })} />
-        <Btn label="E2MOM 20" onClick={handle(seq.e2mom20, { title: 'E2MOM 20', subtitle: 'Every 2 minutes × 10' })} />
-        <Btn label="For Time (Cap 15)" onClick={handle(seq.cap15, { title: 'For Time (Cap 15)' })} />
-        <Btn label="Death By (12)" onClick={handle(seq.deathBy12, { title: 'Death By', subtitle: '12 minutes' })} />
+        <Btn label="AMRAP 12" onClick={handle(seq.amrap12, { title: 'AMRAP 12', subtitle: 'As Many Rounds/Reps As Possible in 12:00. Pace steady; push last minute.' })} />
+        <Btn label="AMRAP 20" onClick={handle(seq.amrap20, { title: 'AMRAP 20', subtitle: 'As Many Rounds/Reps As Possible in 20:00. Set a rhythm; breathe.' })} />
+        <Btn label="EMOM 10" onClick={handle(seq.emom10, { title: 'EMOM 10', subtitle: 'Every Minute On the Minute. Start a set each minute; rest with time left.' })} />
+        <Btn label="E2MOM 20" onClick={handle(seq.e2mom20, { title: 'E2MOM 20', subtitle: 'Every 2 Minutes On the Minute × 10. More work per set; longer rest.' })} />
+        <Btn label="For Time (Cap 15)" onClick={handle(seq.cap15, { title: 'For Time (Cap 15)', subtitle: 'Complete the prescribed work as fast as possible; hard stop at 15:00.' })} />
+        <Btn label="Death By (12)" onClick={handle(seq.deathBy12, { title: 'Death By (12)', subtitle: 'Start with 1 rep @ 0:00, add 1 rep each minute. Go until you can’t make the minute.' })} />
       </Section>
       <Section title="BJJ">
-        <Btn label="Positional Rounds" subtitle="6 × 6:00 / 1:00" onClick={handle(seq.bjjPositional, { title: 'BJJ Positional', subtitle: '6 × 6:00 / 1:00' })} />
-        <Btn label="Sparring (Rolling)" subtitle="5 × 6:00 / 1:00" onClick={handle(seq.bjjSparring, { title: 'BJJ Sparring', subtitle: '5 × 6:00 / 1:00' })} />
-        <Btn label="Open Mat Blocks (30:00)" onClick={handle(seq.bjjOpenMat30, { title: 'Open Mat Blocks', subtitle: '30:00 continuous' })} />
-        <Btn label="Shark Tank (10 × 1:00 / 0:15)" onClick={handle(seq.bjjSharkTank, { title: 'Shark Tank', subtitle: '10 × 1:00 / 0:15' })} />
+        <Btn label="Positional Rounds" subtitle="6 × 6:00 / 1:00" onClick={handle(seq.bjjPositional, { title: 'BJJ Positional', subtitle: '6:00 work with halfway cue to switch top/bottom, 1:00 rest × 6.' })} />
+        <Btn label="Sparring (Rolling)" subtitle="5 × 6:00 / 1:00" onClick={handle(seq.bjjSparring, { title: 'BJJ Sparring', subtitle: 'Standard rolling rounds: 6:00 work / 1:00 rest × 5.' })} />
+        <Btn label="Open Mat Blocks (30:00)" onClick={handle(seq.bjjOpenMat30, { title: 'Open Mat Block', subtitle: '30:00 continuous training. Flow roll, drill, or spar as desired.' })} />
+        <Btn label="Shark Tank (10 × 1:00 / 0:15)" onClick={handle(seq.bjjSharkTank, { title: 'Shark Tank', subtitle: 'Fresh partner every minute: 1:00 hard effort, 0:15 transition × 10.' })} />
       </Section>
       <Section title="Muay Thai">
-        <Btn label="Pads (5 × 3:00 / 1:00)" onClick={handle(seq.muayPads, { title: 'Muay Thai Pads', subtitle: '5 × 3:00 / 1:00' })} />
-        <Btn label="Bag Rounds (10 × 3:00 / 1:00)" onClick={handle(seq.muayBag, { title: 'Muay Thai Bag', subtitle: '10 × 3:00 / 1:00' })} />
-        <Btn label="Clinch (6 × 3:00 / 0:30)" onClick={handle(seq.muayClinch, { title: 'Muay Thai Clinch', subtitle: '6 × 3:00 / 0:30' })} />
-        <Btn label="Conditioning Sprints (8 × 0:30 / 0:30)" onClick={handle(seq.muaySprints8, { title: 'Sprints', subtitle: '8 × 0:30 / 0:30' })} />
-        <Btn label="Conditioning Sprints (10 × 0:45 / 0:15)" onClick={handle(seq.muaySprints10, { title: 'Sprints', subtitle: '10 × 0:45 / 0:15' })} />
-        <Btn label="Shadowboxing (5 × 3:00 / 1:00)" onClick={handle(seq.muayShadow, { title: 'Shadowboxing', subtitle: '5 × 3:00 / 1:00' })} />
+        <Btn label="Pads (5 × 3:00 / 1:00)" onClick={handle(seq.muayPads, { title: 'Muay Thai Pads', subtitle: 'Coach-led pad rounds. Last 30s power cue suggested.' })} />
+        <Btn label="Bag Rounds (10 × 3:00 / 1:00)" onClick={handle(seq.muayBag, { title: 'Muay Thai Bag', subtitle: 'Technical bag work or conditioning blocks, 3:00 work / 1:00 rest × 10.' })} />
+        <Btn label="Clinch (6 × 3:00 / 0:30)" onClick={handle(seq.muayClinch, { title: 'Muay Thai Clinch', subtitle: 'Inside control, off-balancing, knees. 3:00 work / 0:30 rest × 6.' })} />
+        <Btn label="Conditioning Sprints (8 × 0:30 / 0:30)" onClick={handle(seq.muaySprints8, { title: 'Sprints (8)', subtitle: 'Anaerobic bursts: 0:30 on / 0:30 off × 8.' })} />
+        <Btn label="Conditioning Sprints (10 × 0:45 / 0:15)" onClick={handle(seq.muaySprints10, { title: 'Sprints (10)', subtitle: 'Longer sets: 0:45 on / 0:15 off × 10.' })} />
+        <Btn label="Shadowboxing (5 × 3:00 / 1:00)" onClick={handle(seq.muayShadow, { title: 'Shadowboxing', subtitle: 'Footwork, rhythm, and flow. 3:00 rounds with 1:00 rest × 5.' })} />
       </Section>
     </div>
   );

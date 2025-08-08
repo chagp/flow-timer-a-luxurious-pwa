@@ -1,16 +1,34 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import QuickPresets from './QuickPresets';
 import { CloseIcon, SparklesIcon } from './icons';
-import { Settings } from '../types';
+import { Settings, TimerMode } from '../types';
 
 interface QuickPresetsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onApply: (settings: Settings) => void;
+  onApply: (settings: Settings, meta: { title: string; subtitle?: string }) => void;
+  onStartPreset?: (settings: Settings, meta: { title: string; subtitle?: string }) => void;
 }
 
-const QuickPresetsModal: React.FC<QuickPresetsModalProps> = ({ isOpen, onClose, onApply }) => {
+const QuickPresetsModal: React.FC<QuickPresetsModalProps> = ({ isOpen, onClose, onApply, onStartPreset }) => {
+  const [selected, setSelected] = useState<null | { settings: Settings; meta: { title: string; subtitle?: string } }>(null);
+
+  const totalTime = useMemo(() => {
+    if (!selected) return '';
+    const s = selected.settings;
+    let totalSeconds = 0;
+    if (s.mode === TimerMode.Simple) {
+      totalSeconds = (s.simple.workTime + s.simple.breakTime) * s.simple.sets;
+    } else {
+      const sum = s.advanced.intervals.reduce((acc, i) => acc + i.duration, 0);
+      totalSeconds = sum * s.advanced.rounds;
+    }
+    const m = Math.floor(totalSeconds / 60);
+    const sec = totalSeconds % 60;
+    return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+  }, [selected]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -31,15 +49,48 @@ const QuickPresetsModal: React.FC<QuickPresetsModalProps> = ({ isOpen, onClose, 
           >
             <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border">
               <div className="flex items-center gap-2 text-light-text dark:text-dark-text font-semibold">
-                <SparklesIcon className="w-5 h-5" /> Presets
+                <SparklesIcon className="w-5 h-5" /> {selected ? 'Preset Details' : 'Presets'}
               </div>
-              <button onClick={onClose} className="p-2 rounded-lg hover:bg-light-subtle-bg dark:hover:bg-dark-subtle-bg">
+              <button onClick={() => (selected ? setSelected(null) : onClose())} className="p-2 rounded-lg hover:bg-light-subtle-bg dark:hover:bg-dark-subtle-bg">
                 <CloseIcon className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-4 max-h-[70vh] overflow-y-auto">
-              <QuickPresets onApply={(s) => { onApply(s); onClose(); }} />
-            </div>
+            {!selected ? (
+              <div className="p-4 max-h-[70vh] overflow-y-auto">
+                <QuickPresets onApply={(s, meta) => setSelected({ settings: s, meta })} />
+              </div>
+            ) : (
+              <div className="p-4 space-y-4">
+                <div>
+                  <div className="text-xl font-bold text-light-text dark:text-dark-text">{selected.meta.title}</div>
+                  {selected.meta.subtitle && <div className="text-sm text-light-text/70 dark:text-dark-text/70">{selected.meta.subtitle}</div>}
+                </div>
+                <div className="text-sm text-light-text/70 dark:text-dark-text/70">
+                  Total Time: <span className="font-mono text-light-text dark:text-dark-text">{totalTime}</span>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      onApply(selected.settings, selected.meta);
+                      onClose();
+                    }}
+                    className="flex-1 px-4 py-3 rounded-lg border border-light-border dark:border-dark-border hover:bg-light-subtle-bg dark:hover:bg-dark-subtle-bg"
+                  >
+                    Edit First
+                  </button>
+                  <button
+                    onClick={() => {
+                      const startSettings: Settings = { ...selected.settings, countdown: 10 };
+                      onStartPreset?.(startSettings, selected.meta);
+                      onClose();
+                    }}
+                    className="flex-1 px-4 py-3 rounded-lg bg-light-accent dark:bg-dark-accent text-white font-semibold hover:bg-light-accent-hover dark:hover:bg-dark-accent-hover"
+                  >
+                    Let’s GO (10s)
+                  </button>
+                </div>
+              </div>
+            )}
           </motion.div>
         </motion.div>
       )}
