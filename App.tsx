@@ -91,13 +91,15 @@ const App: React.FC = () => {
       setHistory([]);
   }
 
-  if (!isAuthed) {
-    const url = (import.meta as any).env?.VITE_SUPABASE_URL || (window as any).SUPABASE_URL;
-    const key = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || (window as any).SUPABASE_ANON_KEY;
+  // Auth gate: only show if Supabase env is configured; otherwise bypass in dev
+  const SUPABASE_URL = (import.meta as any).env?.VITE_SUPABASE_URL || (window as any).SUPABASE_URL;
+  const SUPABASE_ANON_KEY = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || (window as any).SUPABASE_ANON_KEY;
+  const hasSupabase = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+  if (!isAuthed && hasSupabase) {
     return (
       <AuthGate
-        supabaseUrl={url}
-        supabaseAnonKey={key}
+        supabaseUrl={SUPABASE_URL}
+        supabaseAnonKey={SUPABASE_ANON_KEY}
         onAuthenticated={() => setIsAuthed(true)}
       />
     );
