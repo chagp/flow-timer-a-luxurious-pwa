@@ -50,6 +50,7 @@ const App: React.FC = () => {
   const [showCountdown, setShowCountdown] = useState(false);
   const [pendingSettings, setPendingSettings] = useState<Settings | null>(null);
   const [startAfterSettings, setStartAfterSettings] = useState(false);
+  const [countdownKey, setCountdownKey] = useState(0);
   
   const playStartSound = useSound('start');
   const playEndSound = useSound('end');
@@ -127,6 +128,7 @@ const App: React.FC = () => {
   if (showCountdown && pendingSettings && pendingSettings.countdown > 0) {
     return (
       <CountdownScreen
+        key={countdownKey}
         countdownSeconds={pendingSettings.countdown}
         onComplete={() => {
           // Apply settings and defer start until timer initializes
@@ -151,6 +153,7 @@ const App: React.FC = () => {
           setShowConfig(false);
           if (newSettings.countdown > 0) {
             setPendingSettings(newSettings);
+            setCountdownKey(k => k + 1); // force fresh countdown instance
             setShowCountdown(true);
           } else {
             // No countdown: apply settings and start once timer is ready

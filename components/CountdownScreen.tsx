@@ -50,10 +50,7 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({
     return () => { completed = true; window.cancelAnimationFrame(rafId); };
   }, [countdownSeconds, onComplete]);
 
-  // Render even when 0 to keep hook order stable; but immediately signal complete
-  if (countdownSeconds === 0) {
-    useEffect(() => { onComplete(); }, [onComplete]);
-  }
+  // App only renders this when countdownSeconds > 0, so keep hooks stable here
 
   return (
     <motion.div
