@@ -115,6 +115,15 @@ const App: React.FC = () => {
     );
   }
 
+  // Auto-start once settings are applied and timer has initialized
+  useEffect(() => {
+    if (startAfterSettings && timerState.totalDuration > 0 && !timerState.isActive && !timerState.isFinished) {
+      timerActions.resetSequence();
+      timerActions.play();
+      setStartAfterSettings(false);
+    }
+  }, [startAfterSettings, timerState.totalDuration, timerState.isActive, timerState.isFinished, timerActions]);
+
   if (showCountdown && pendingSettings && pendingSettings.countdown > 0) {
     return (
       <CountdownScreen
@@ -134,15 +143,6 @@ const App: React.FC = () => {
       />
     );
   }
-
-  // Auto-start once settings are applied and timer has initialized
-  useEffect(() => {
-    if (startAfterSettings && !showCountdown && timerState.totalDuration > 0 && !timerState.isActive && !timerState.isFinished) {
-      timerActions.resetSequence();
-      timerActions.play();
-      setStartAfterSettings(false);
-    }
-  }, [startAfterSettings, showCountdown, timerState.totalDuration, timerState.isActive, timerState.isFinished, timerActions]);
 
   if (showConfig) {
     return (

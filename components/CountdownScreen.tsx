@@ -50,8 +50,9 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({
     return () => { completed = true; window.cancelAnimationFrame(rafId); };
   }, [countdownSeconds, onComplete]);
 
+  // Render even when 0 to keep hook order stable; but immediately signal complete
   if (countdownSeconds === 0) {
-    return null;
+    useEffect(() => { onComplete(); }, [onComplete]);
   }
 
   return (
