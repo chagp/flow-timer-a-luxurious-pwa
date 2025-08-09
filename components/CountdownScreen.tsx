@@ -41,13 +41,13 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({
         onComplete();
       }
     };
-    // Use rAF to drive updates smoothly, immune to some timer throttling
+    // Use rAF to drive updates smoothly, stop after completion
     let rafId = 0;
-    const loop = () => { tick(); rafId = window.requestAnimationFrame(loop); };
+    const loop = () => { tick(); if (!completed) rafId = window.requestAnimationFrame(loop); };
     rafId = window.requestAnimationFrame(loop);
     // Initial tick to avoid waiting for first interval
     tick();
-    return () => window.cancelAnimationFrame(rafId);
+    return () => { completed = true; window.cancelAnimationFrame(rafId); };
   }, [countdownSeconds, onComplete]);
 
   if (countdownSeconds === 0) {

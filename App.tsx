@@ -49,6 +49,7 @@ const App: React.FC = () => {
   const [showConfig, setShowConfig] = useState(false);
   const [showCountdown, setShowCountdown] = useState(false);
   const [pendingSettings, setPendingSettings] = useState<Settings | null>(null);
+  const [startAfterSettings, setStartAfterSettings] = useState(false);
   
   const playStartSound = useSound('start');
   const playEndSound = useSound('end');
@@ -114,17 +115,16 @@ const App: React.FC = () => {
     );
   }
 
-  if (showCountdown && pendingSettings) {
+  if (showCountdown && pendingSettings && pendingSettings.countdown > 0) {
     return (
       <CountdownScreen
         countdownSeconds={pendingSettings.countdown}
         onComplete={() => {
+          // Apply settings and defer start until timer initializes
           setSettings(pendingSettings!);
           setShowCountdown(false);
           setPendingSettings(null);
-          // Sequence is rebuilt by settings effect; start immediately
-          timerActions.resetSequence();
-          timerActions.play();
+          setStartAfterSettings(true);
         }}
         onCancel={() => {
           setShowCountdown(false);
@@ -135,13 +135,28 @@ const App: React.FC = () => {
     );
   }
 
+  // Auto-start once settings are applied and timer has initialized
+  useEffect(() => {
+    if (startAfterSettings && !showCountdown && timerState.totalDuration > 0 && !timerState.isActive && !timerState.isFinished) {
+      timerActions.resetSequence();
+      timerActions.play();
+      setStartAfterSettings(false);
+    }
+  }, [startAfterSettings, showCountdown, timerState.totalDuration, timerState.isActive, timerState.isFinished, timerActions]);
+
   if (showConfig) {
     return (
       <ConfigurationScreen
         onStart={(newSettings) => {
           setShowConfig(false);
-          setPendingSettings(newSettings);
-          setShowCountdown(true);
+          if (newSettings.countdown > 0) {
+            setPendingSettings(newSettings);
+            setShowCountdown(true);
+          } else {
+            // No countdown: apply settings and start once timer is ready
+            setSettings(newSettings);
+            setStartAfterSettings(true);
+          }
         }}
         history={history}
         onClearHistory={clearHistory}
