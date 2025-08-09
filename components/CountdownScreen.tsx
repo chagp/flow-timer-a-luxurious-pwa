@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { playCue, playCountdownTick } from '../utils/soundManager';
 
@@ -14,10 +14,15 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({
   onCancel 
 }) => {
   const [timeLeft, setTimeLeft] = useState(countdownSeconds);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useEffect(() => {
     if (countdownSeconds === 0) {
-      onComplete();
+      onCompleteRef.current();
       return;
     }
 
@@ -38,17 +43,38 @@ const CountdownScreen: React.FC<CountdownScreenProps> = ({
         completed = true;
         // distinct start tone
         playCue('workStart');
-        onComplete();
+        onCompleteRef.current();
       }
     };
-    // Use rAF to drive updates smoothly, stop after completion
+    // Use rAF to drive updates smoothly, stop after completion.
+    // Guard visibility: if the page is hidden, fall back to setInterval to avoid rAF throttling.
     let rafId = 0;
+    let intervalId: number | null = null;
+    const useInterval = () => {
+      if (intervalId) window.clearInterval(intervalId);
+      intervalId = window.setInterval(() => { tick(); if (completed && intervalId) { window.clearInterval(intervalId); intervalId = null; } }, 250);
+    };
     const loop = () => { tick(); if (!completed) rafId = window.requestAnimationFrame(loop); };
-    rafId = window.requestAnimationFrame(loop);
+    const handleVis = () => {
+      if (document.hidden) {
+        if (rafId) { window.cancelAnimationFrame(rafId); rafId = 0; }
+        useInterval();
+      } else {
+        if (intervalId) { window.clearInterval(intervalId); intervalId = null; }
+        rafId = window.requestAnimationFrame(loop);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVis);
+    handleVis();
     // Initial tick to avoid waiting for first interval
     tick();
-    return () => { completed = true; window.cancelAnimationFrame(rafId); };
-  }, [countdownSeconds, onComplete]);
+    return () => {
+      completed = true;
+      document.removeEventListener('visibilitychange', handleVis);
+      if (rafId) window.cancelAnimationFrame(rafId);
+      if (intervalId) window.clearInterval(intervalId);
+    };
+  }, [countdownSeconds]);
 
   // App only renders this when countdownSeconds > 0, so keep hooks stable here
 

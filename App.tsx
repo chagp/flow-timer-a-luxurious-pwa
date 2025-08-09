@@ -118,12 +118,16 @@ const App: React.FC = () => {
 
   // Auto-start once settings are applied and timer has initialized
   useEffect(() => {
-    if (startAfterSettings && timerState.totalDuration > 0 && !timerState.isActive && !timerState.isFinished) {
-      timerActions.resetSequence();
+    if (
+      startAfterSettings &&
+      timerState.totalDuration > 0 &&
+      timerState.timeRemaining > 0 &&
+      !timerState.isActive
+    ) {
       timerActions.play();
       setStartAfterSettings(false);
     }
-  }, [startAfterSettings, timerState.totalDuration, timerState.isActive, timerState.isFinished, timerActions]);
+  }, [startAfterSettings, timerState.totalDuration, timerState.timeRemaining, timerState.isActive, timerActions]);
 
   if (showCountdown && pendingSettings && pendingSettings.countdown > 0) {
     return (

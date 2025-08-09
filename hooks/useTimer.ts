@@ -175,7 +175,9 @@ export const useTimer = (
       }, 1000);
     }
 
-    if (timeRemaining > 0 || isFinished) {
+    // Use latest sequence after a reset
+    const canStart = (sequence.length > 0 ? sequence[currentIntervalIndex].duration * 1000 : 0) > 0;
+    if (timeRemaining > 0 || (isFinished && canStart)) {
       console.log('Starting timer - setting isActive to true');
       setIsActive(true);
       // Try to play sound but don't let it block timer start
