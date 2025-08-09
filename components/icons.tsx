@@ -21,9 +21,23 @@ export const SkipIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
 );
 
-// Lucide icon: cog
+// Classic gear/cog icon (stroke-based) commonly used for Settings
 export const SettingsIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="m17 7 1.4-1.4"/><path d="m5.6 18.4 1.4-1.4"/><path d="M22 12h-2"/><path d="M4 12H2"/><path d="m18.4 5.6-1.4 1.4"/><path d="m7 17-1.4 1.4"/></svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.397.165.855.142 1.205-.077l.805-.52a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.52.806c-.219.35-.242.806-.077 1.203.165.397.505.711.93.78l.893.15c.543.09.94.56.94 1.11v1.094c0 .55-.398 1.02-.94 1.11l-.894.149c-.424.07-.764.384-.93.78-.165.397-.142.855.077 1.205l.52.805c.32.448.269 1.061-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.806-.52c-.35-.219-.806-.242-1.203-.077-.397.165-.71.505-.781.929l-.149.894c-.09.543-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.397-.165-.854-.142-1.204.077l-.805.52c-.448.32-1.061.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.449l.52-.806c.219-.35.242-.806.077-1.203-.165-.397-.505-.71-.929-.781l-.894-.149c-.542-.09-.94-.56-.94-1.11v-1.094c0-.55.398-1.019.94-1.11l.894-.148c.424-.071.764-.384.93-.781.165-.397.142-.854-.077-1.204l-.52-.805a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.806.52c.35.219.806.242 1.203.077.397-.165.71-.505.781-.929l.149-.894Z" />
+    <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+  </svg>
 );
 
 // Lucide icon: history (with clock hands for clarity)
