@@ -122,24 +122,9 @@ const App: React.FC = () => {
           setSettings(pendingSettings!);
           setShowCountdown(false);
           setPendingSettings(null);
-          // Use multiple approaches for mobile compatibility
-          requestAnimationFrame(() => {
-            timerActions.resetSequence();
-            requestAnimationFrame(() => {
-              // Force timer to start with explicit state check
-              timerActions.play();
-              console.log('Timer play() called after countdown');
-              
-              // Double-check after a short delay for mobile
-              setTimeout(() => {
-                console.log('Double-checking timer state on mobile...');
-                if (!timerState.isActive && timerState.timeRemaining > 0) {
-                  console.log('Timer not active, forcing play again');
-                  timerActions.play();
-                }
-              }, 100);
-            });
-          });
+          // Sequence is rebuilt by settings effect; start immediately
+          timerActions.resetSequence();
+          timerActions.play();
         }}
         onCancel={() => {
           setShowCountdown(false);

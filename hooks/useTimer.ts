@@ -90,7 +90,8 @@ export const useTimer = (
   }, [getSequence, getTotalSets]);
 
   useEffect(() => {
-      resetSequence();
+    // When settings change, rebuild sequence and sets but preserve paused state until play
+    resetSequence();
   }, [settings, resetSequence]);
   
   // Cleanup intervals on unmount
