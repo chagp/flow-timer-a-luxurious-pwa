@@ -30,10 +30,11 @@ const TimerDisplay: React.FC<TimerDisplayProps> = ({ timeRemaining, totalDuratio
   const circumference = CIRCUMFERENCE;
   const dashOffset = circumference * (1 - progress);
   // Theme-based colors
-  const trackColor = theme === 'dark' ? '#1F2937' : '#F3F4F6';
+  const trackColor = theme === 'dark' ? '#1F2937' : '#E2E8F0';
+  const trackOpacity = theme === 'dark' ? 0.4 : 0.65;
   const strokeColor = theme === 'dark'
     ? (mode === 'work' ? '#63e6be' : '#546E7A')
-    : (mode === 'work' ? '#0b5ed7' : '#CBD5E1');
+    : (mode === 'work' ? '#0b5ed7' : '#94A3B8');
   // Breathing effect during break
   const breathingProps = mode === 'break'
     ? { animate: { scale: [1, 1.02, 1] }, transition: { duration: 2, ease: 'easeInOut', repeat: Infinity } }
@@ -49,7 +50,7 @@ const TimerDisplay: React.FC<TimerDisplayProps> = ({ timeRemaining, totalDuratio
           r={RADIUS}
           strokeWidth={STROKE_WIDTH}
           stroke={trackColor}
-          opacity={0.4}
+          opacity={trackOpacity}
           fill="transparent"
         />
         {/* Animated progress fill */}
@@ -67,6 +68,7 @@ const TimerDisplay: React.FC<TimerDisplayProps> = ({ timeRemaining, totalDuratio
           initial={false}
           animate={{ strokeDashoffset: dashOffset }}
           transition={{ type: 'tween', ease: 'linear', duration: 0.1 }}
+          style={{ filter: theme === 'light' ? 'drop-shadow(0 0 4px rgba(0,0,0,0.08))' : undefined }}
         />
         {/* Rotating dot indicator group */}
         <motion.g
