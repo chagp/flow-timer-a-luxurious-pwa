@@ -12,6 +12,23 @@ export default defineConfig(({ mode }) => {
         alias: {
           '@': path.resolve(__dirname, '.'),
         }
+      },
+      esbuild: {
+        drop: mode === 'production' ? ['console', 'debugger'] : [],
+      },
+      build: {
+        target: 'es2020',
+        sourcemap: false,
+        cssCodeSplit: true,
+        rollupOptions: {
+          output: {
+            manualChunks: {
+              'vendor-react': ['react', 'react-dom'],
+              'vendor-motion': ['framer-motion'],
+              'vendor-supabase': ['@supabase/supabase-js']
+            }
+          }
+        }
       }
     };
 });

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
+// import { motion, AnimatePresence } from 'framer-motion';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useTimer } from './hooks/useTimer';
 import { useSound } from './hooks/useSound';
@@ -8,13 +8,17 @@ import { Settings, HistoryEntry, Theme, TimerMode } from './types';
 import { DEFAULT_SETTINGS, SOUNDS } from './constants';
 import TimerDisplay from './components/TimerDisplay';
 import Controls from './components/Controls';
-import ConfigurationScreen from './components/ConfigurationScreen';
-import AuthGate from './components/AuthGate';
-import CountdownScreen from './components/CountdownScreen';
+// import ConfigurationScreen from './components/ConfigurationScreen';
+// import AuthGate from './components/AuthGate';
+// import CountdownScreen from './components/CountdownScreen';
 import ThemeToggle from './components/ThemeToggle';
 import SessionCounter from './components/SessionCounter';
 import { SettingsIcon } from './components/icons';
 import A2HSHint from './components/A2HSHint';
+
+const AuthGate = React.lazy(() => import('./components/AuthGate'));
+const ConfigurationScreen = React.lazy(() => import('./components/ConfigurationScreen'));
+const CountdownScreen = React.lazy(() => import('./components/CountdownScreen'));
 
 const formatWorkTime = (seconds: number) => {
     const totalMinutes = Math.floor(seconds / 60);
@@ -51,7 +55,28 @@ const App: React.FC = () => {
   const [pendingSettings, setPendingSettings] = useState<Settings | null>(null);
   const [startAfterSettings, setStartAfterSettings] = useState(false);
   const [countdownKey, setCountdownKey] = useState(0);
-  
+
+  const [framerModule, setFramerModule] = useState<{ motion: any; AnimatePresence: any } | null>(null);
+  useEffect(() => {
+    let mounted = true;
+    const load = () => {
+      import('framer-motion')
+        .then(mod => { if (mounted) setFramerModule({ motion: mod.motion, AnimatePresence: mod.AnimatePresence }); })
+        .catch(() => {});
+    };
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(load, { timeout: 1500 });
+    } else {
+      // Fallback: defer until first pointer interaction
+      const onFirst = () => { load(); window.removeEventListener('pointerdown', onFirst); };
+      window.addEventListener('pointerdown', onFirst, { once: true, passive: true });
+    }
+    return () => { mounted = false; };
+  }, []);
+
+  const MotionDiv: any = framerModule?.motion?.div ?? 'div';
+  const MotionButton: any = framerModule?.motion?.button ?? 'button';
+
   const playStartSound = useSound('start');
   const playEndSound = useSound('end');
   const playCompleteSound = useSound('complete');
@@ -108,11 +133,13 @@ const App: React.FC = () => {
   const hasSupabase = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
   if (!isAuthed && hasSupabase) {
     return (
-      <AuthGate
-        supabaseUrl={SUPABASE_URL}
-        supabaseAnonKey={SUPABASE_ANON_KEY}
-        onAuthenticated={() => setIsAuthed(true)}
-      />
+      <Suspense fallback={<div className="min-h-screen" /> }>
+        <AuthGate
+          supabaseUrl={SUPABASE_URL}
+          supabaseAnonKey={SUPABASE_ANON_KEY}
+          onAuthenticated={() => setIsAuthed(true)}
+        />
+      </Suspense>
     );
   }
 
@@ -131,72 +158,71 @@ const App: React.FC = () => {
 
   if (showCountdown && pendingSettings && pendingSettings.countdown > 0) {
     return (
-      <CountdownScreen
-        key={countdownKey}
-        countdownSeconds={pendingSettings.countdown}
-        onComplete={() => {
-          // Apply settings and defer start until timer initializes
-          setSettings(pendingSettings!);
-          setShowCountdown(false);
-          setPendingSettings(null);
-          setStartAfterSettings(true);
-        }}
-        onCancel={() => {
-          setShowCountdown(false);
-          setPendingSettings(null);
-          setShowConfig(true);
-        }}
-      />
+      <Suspense fallback={<div className="min-h-screen" /> }>
+        <CountdownScreen
+          key={countdownKey}
+          countdownSeconds={pendingSettings.countdown}
+          onComplete={() => {
+            // Apply settings and defer start until timer initializes
+            setSettings(pendingSettings!);
+            setShowCountdown(false);
+            setPendingSettings(null);
+            setStartAfterSettings(true);
+          }}
+          onCancel={() => {
+            setShowCountdown(false);
+            setPendingSettings(null);
+            setShowConfig(true);
+          }}
+        />
+      </Suspense>
     );
   }
 
   if (showConfig) {
     return (
-      <ConfigurationScreen
-        onStart={(newSettings) => {
-          setShowConfig(false);
-          if (newSettings.countdown > 0) {
-            setPendingSettings(newSettings);
-            setCountdownKey(k => k + 1); // force fresh countdown instance
-            setShowCountdown(true);
-          } else {
-            // No countdown: apply settings and start once timer is ready
-            setSettings(newSettings);
-            setStartAfterSettings(true);
-          }
-        }}
-        history={history}
-        onClearHistory={clearHistory}
-      />
+      <Suspense fallback={<div className="min-h-screen" /> }>
+        <ConfigurationScreen
+          onStart={(newSettings) => {
+            setShowConfig(false);
+            if (newSettings.countdown > 0) {
+              setPendingSettings(newSettings);
+              setCountdownKey(k => k + 1); // force fresh countdown instance
+              setShowCountdown(true);
+            } else {
+              // No countdown: apply settings and start once timer is ready
+              setSettings(newSettings);
+              setStartAfterSettings(true);
+            }
+          }}
+          history={history}
+          onClearHistory={clearHistory}
+        />
+      </Suspense>
     );
   }
   return (
     <div className={`relative flex flex-col items-center justify-center min-h-screen p-4 font-sans text-light-text dark:text-dark-text transition-colors duration-500`}>  
       {/* Background overlays behind content; do not block interactions */}
-      <motion.div
+      <MotionDiv
         className="absolute inset-0 z-0 pointer-events-none"
         style={{ background: workGradient }}
-        initial={false}
-        animate={{ opacity: isWorkActive ? 1 : 0 }}
-        transition={{ duration: 0.4 }}
+        {...(framerModule ? { initial: false, animate: { opacity: isWorkActive ? 1 : 0 }, transition: { duration: 0.4 } } : {})}
       />
-      <motion.div
+      <MotionDiv
         className="absolute inset-0 z-0 pointer-events-none"
         style={{ background: breakGradient }}
-        initial={false}
-        animate={{ opacity: isBreakActive ? 1 : 0 }}
-        transition={{ duration: 0.4 }}
+        {...(framerModule ? { initial: false, animate: { opacity: isBreakActive ? 1 : 0 }, transition: { duration: 0.4 } } : {})}
       />
       <div className="absolute top-10 left-4 right-4 flex justify-between items-center">
-        <motion.button
+        <MotionButton
             onClick={() => setShowConfig(true)}
             className="p-2 rounded-full bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+            {...(framerModule ? { whileHover: { scale: 1.1 }, whileTap: { scale: 0.9 } } : {})}
             aria-label="Open Settings"
         >
             <SettingsIcon className="w-6 h-6" />
-        </motion.button>
+        </MotionButton>
         <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
       </div>
       
