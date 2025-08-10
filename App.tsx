@@ -16,7 +16,6 @@ import SessionCounter from './components/SessionCounter';
 import { SettingsIcon } from './components/icons';
 import A2HSHint from './components/A2HSHint';
 
-const AuthGate = React.lazy(() => import('./components/AuthGate'));
 const ConfigurationScreen = React.lazy(() => import('./components/ConfigurationScreen'));
 const CountdownScreen = React.lazy(() => import('./components/CountdownScreen'));
 
@@ -49,7 +48,6 @@ const App: React.FC = () => {
   const [settings, setSettings] = useLocalStorage<Settings>('flow-timer-settings', DEFAULT_SETTINGS);
   const [history, setHistory] = useLocalStorage<HistoryEntry[]>('flow-timer-history', []);
   const [theme, setTheme] = useLocalStorage<Theme>('flow-timer-theme', 'dark');
-  const [isAuthed, setIsAuthed] = useState<boolean>(false);
   const [showConfig, setShowConfig] = useState(false);
   const [showCountdown, setShowCountdown] = useState(false);
   const [pendingSettings, setPendingSettings] = useState<Settings | null>(null);
@@ -127,21 +125,6 @@ const App: React.FC = () => {
       setHistory([]);
   }
 
-  // Auth gate: only show if Supabase env is configured; otherwise bypass in dev
-  const SUPABASE_URL = (import.meta as any).env?.VITE_SUPABASE_URL || (window as any).SUPABASE_URL;
-  const SUPABASE_ANON_KEY = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || (window as any).SUPABASE_ANON_KEY;
-  const hasSupabase = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
-  if (!isAuthed && hasSupabase) {
-    return (
-      <Suspense fallback={<div className="min-h-screen" /> }>
-        <AuthGate
-          supabaseUrl={SUPABASE_URL}
-          supabaseAnonKey={SUPABASE_ANON_KEY}
-          onAuthenticated={() => setIsAuthed(true)}
-        />
-      </Suspense>
-    );
-  }
 
   // Auto-start once settings are applied and timer has initialized
   useEffect(() => {
