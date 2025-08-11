@@ -13,3 +13,23 @@ body {
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 }
+
+/* In installed PWA (standalone), lock the app to the viewport and remove extra padding
+   so there is no vertical scroll or rubber-band effect. */
+@media (display-mode: standalone) {
+  body {
+    padding: 0;
+  }
+  html,
+  body,
+  #root {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
+    touch-action: manipulation;
+  }
+}
