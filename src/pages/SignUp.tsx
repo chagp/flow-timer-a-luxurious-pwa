@@ -40,7 +40,7 @@ export default function SignUp() {
             type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full p-2 rounded border border-light-border dark:border-dark-border bg-transparent text-light-text dark:text-dark-text placeholder:text-light-text/60 dark:placeholder:text-dark-text/60"
+            className="w-full p-3 rounded-lg border border-light-border dark:border-dark-border bg-white text-light-text placeholder:text-light-text/60"
             placeholder="Optional"
           />
         </div>
@@ -50,7 +50,7 @@ export default function SignUp() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 rounded border border-light-border dark:border-dark-border bg-transparent text-light-text dark:text-dark-text placeholder:text-light-text/60 dark:placeholder:text-dark-text/60"
+            className="w-full p-3 rounded-lg border border-light-border dark:border-dark-border bg-white text-light-text placeholder:text-light-text/60"
             required
           />
         </div>
@@ -60,11 +60,11 @@ export default function SignUp() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 rounded border border-light-border dark:border-dark-border bg-transparent text-light-text dark:text-dark-text placeholder:text-light-text/60 dark:placeholder:text-dark-text/60"
+            className="w-full p-3 rounded-lg border border-light-border dark:border-dark-border bg-white text-light-text placeholder:text-light-text/60"
             required
           />
         </div>
-        <button disabled={loading} type="submit" className="w-full p-2 rounded bg-light-accent dark:bg-dark-accent text-white disabled:opacity-50">
+        <button disabled={loading} type="submit" className="w-full py-3 rounded-lg bg-light-accent dark:bg-dark-accent text-white disabled:opacity-50">
           {loading ? 'Creating…' : 'Sign Up'}
         </button>
         <Link
