@@ -30,10 +30,10 @@ body {
 }
 
 /* ---------- 3. Utility to pin UI above home-indicator ---------- */
-.bottom-safe { bottom: 24px; }
+.bottom-safe { bottom: 10px; }
 @supports (bottom: env(safe-area-inset-bottom))   {
-  .bottom-safe { bottom: calc(env(safe-area-inset-bottom) + 16px); }
+  .bottom-safe { bottom: calc(env(safe-area-inset-bottom) + 10px); }
 }
 @supports (bottom: constant(safe-area-inset-bottom)) {              /* old iOS */
-  .bottom-safe { bottom: calc(constant(safe-area-inset-bottom) + 16px); }
+  .bottom-safe { bottom: calc(constant(safe-area-inset-bottom) + 10px); }
 }
