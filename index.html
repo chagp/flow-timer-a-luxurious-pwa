@@ -7,14 +7,15 @@
     
     <!-- PWA Meta Tags for a native feel -->
     <meta name="application-name" content="Flow Timer">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Flow Timer">
-    <link rel="manifest" href="/manifest.webmanifest">
     <meta name="description" content="A luxurious Pomodoro and interval timer to help you focus.">
     <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#f8f9fa" media="(prefers-color-scheme: light)">
     <link rel="apple-touch-icon" href="https://picsum.photos/192/192">
+    <link rel="manifest" href="/manifest.webmanifest">
 
     <title>Flow Timer</title>
 
@@ -24,7 +25,7 @@
 
 
   </head>
-  <body class="bg-light-bg dark:bg-dark-bg transition-colors duration-500">
+  <body class="bg-light-bg dark:bg-dark-bg transition-colors duration-500" style="height:100vh;">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>
