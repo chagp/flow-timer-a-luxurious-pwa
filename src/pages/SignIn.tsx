@@ -113,9 +113,12 @@ export default function SignIn() {
           <GoogleIcon className="w-5 h-5" />
           Sign in with Google
         </button>
-        <div className="text-center text-sm">
-          No account? <Link to="/signup" className="underline">Create one</Link>
-        </div>
+        <Link
+          to="/signup"
+          className="block text-center text-sm text-light-text dark:text-dark-text underline decoration-2 underline-offset-4 font-medium"
+        >
+          No account? Create one
+        </Link>
         </form>
       </section>
     </div>
