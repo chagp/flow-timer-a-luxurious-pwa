@@ -32,45 +32,47 @@ export default function SignUp() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4 bg-light-card dark:bg-dark-card p-6 rounded-lg border border-light-border dark:border-dark-border">
-        <h1 className="text-xl font-semibold">Create account</h1>
+        <h1 className="text-xl font-semibold text-light-text dark:text-dark-text">Create account</h1>
         {error && <div className="text-red-500 text-sm">{error}</div>}
         <div className="space-y-1">
-          <label className="block text-sm">Full name</label>
+          <label className="block text-sm text-light-text dark:text-dark-text">Full name</label>
           <input
             type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full p-2 rounded border border-light-border dark:border-dark-border bg-transparent"
+            className="w-full p-2 rounded border border-light-border dark:border-dark-border bg-transparent text-light-text dark:text-dark-text placeholder:text-light-text/60 dark:placeholder:text-dark-text/60"
             placeholder="Optional"
           />
         </div>
         <div className="space-y-1">
-          <label className="block text-sm">Email</label>
+          <label className="block text-sm text-light-text dark:text-dark-text">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 rounded border border-light-border dark:border-dark-border bg-transparent"
+            className="w-full p-2 rounded border border-light-border dark:border-dark-border bg-transparent text-light-text dark:text-dark-text placeholder:text-light-text/60 dark:placeholder:text-dark-text/60"
             required
           />
         </div>
         <div className="space-y-1">
-          <label className="block text-sm">Password</label>
+          <label className="block text-sm text-light-text dark:text-dark-text">Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 rounded border border-light-border dark:border-dark-border bg-transparent"
+            className="w-full p-2 rounded border border-light-border dark:border-dark-border bg-transparent text-light-text dark:text-dark-text placeholder:text-light-text/60 dark:placeholder:text-dark-text/60"
             required
           />
         </div>
         <button disabled={loading} type="submit" className="w-full p-2 rounded bg-light-accent dark:bg-dark-accent text-white disabled:opacity-50">
           {loading ? 'Creating…' : 'Sign Up'}
         </button>
-        <div className="text-center text-sm">
-          Already have an account?{' '}
-          <Link to="/signin" className="underline">Sign in</Link>
-        </div>
+        <Link
+          to="/signin"
+          className="block text-center text-sm text-light-text dark:text-dark-text underline decoration-2 underline-offset-4 font-medium"
+        >
+          Already have an account? Sign in
+        </Link>
       </form>
     </div>
   );
