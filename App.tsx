@@ -248,7 +248,7 @@ const App: React.FC = () => {
         />
       </main>
 
-      <div className="absolute bottom-10 left-4 right-4 flex justify-between items-center font-mono text-base sm:text-lg text-light-text dark:text-dark-text">
+      <div className="absolute left-4 right-4 flex justify-between items-center font-mono text-base sm:text-lg text-light-text dark:text-dark-text bottom-safe">
         <span>Work: {formatWorkTime(timerState.totalWorkTime)}</span>
         <span>Total: {formatRealTime(timerState.realTimeElapsed)}</span>
       </div>

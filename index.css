@@ -33,3 +33,13 @@ body {
     touch-action: manipulation;
   }
 }
+
+/* Safe bottom utility to keep fixed/absolute UI above the home indicator */
+.bottom-safe {
+  bottom: 10px;
+}
+@supports (bottom: env(safe-area-inset-bottom)) {
+  .bottom-safe {
+    bottom: calc(env(safe-area-inset-bottom) + 10px);
+  }
+}
