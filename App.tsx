@@ -198,7 +198,7 @@ const App: React.FC = () => {
     );
   }
   return (
-    <div className={`relative flex flex-col items-center justify-center min-h-screen p-4 font-sans text-light-text dark:text-dark-text transition-colors duration-500`}>  
+    <div className={`relative flex flex-col items-center justify-center min-h-screen p-4 font-sans text-light-text dark:text-dark-text transition-colors duration-500`} style={{ minHeight: '100svh' }}>  
       <MigrationBanner />
       {/* Background overlays behind content; do not block interactions */}
       <MotionDiv

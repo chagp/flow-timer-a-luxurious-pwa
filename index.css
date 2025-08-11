@@ -17,9 +17,7 @@ body {
 /* In installed PWA (standalone), lock the app to the viewport and remove extra padding
    so there is no vertical scroll or rubber-band effect. */
 @media (display-mode: standalone) {
-  body {
-    padding: 0;
-  }
+  body { padding: 0; }
   html,
   body,
   #root {
@@ -27,8 +25,8 @@ body {
     inset: 0;
     width: 100vw;
     height: 100vh;   /* fallback */
-    height: 100dvh;  /* modern browsers */
     height: 100svh;  /* iOS Safari small viewport */
+    height: 100dvh;  /* modern browsers */
     overflow: hidden;
     overscroll-behavior: none;
     -webkit-overflow-scrolling: auto;
