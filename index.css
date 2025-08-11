@@ -2,39 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
-/* PWA safe-area handling and full-height */
-html, body, #root {
-  height: 100%;
-}
-body {
-  min-height: 100vh;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
+/* PWA full-bleed background and safe-area handling */
+html {
+  height: 100vh;
+  height: 100dvh;
+  height: 100svh;
+  @apply bg-light-bg dark:bg-dark-bg;
 }
 
-/* In installed PWA (standalone), lock the app to the viewport and remove extra padding
-   so there is no vertical scroll or rubber-band effect. */
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: 100svh;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  @apply bg-light-bg dark:bg-dark-bg;
+}
+
+#root {
+  min-height: 100%;
+  @apply bg-light-bg dark:bg-dark-bg;
+}
+
+/* Standalone PWA mode: lock viewport and remove padding */
 @media (display-mode: standalone) {
-  body { padding: 0; }
-  html,
-  body,
+  html, body {
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: manipulation;
+  }
+  
+  body {
+    padding: 0;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    height: 100svh;
+  }
+  
   #root {
     position: fixed;
     inset: 0;
     width: 100vw;
-    height: 100vh;   /* fallback */
-    height: 100svh;  /* iOS Safari small viewport */
-    height: 100dvh;  /* modern browsers */
-    overflow: hidden;
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: auto;
-    touch-action: manipulation;
+    height: 100vh;
+    height: 100dvh;
+    height: 100svh;
   }
 }
 
-/* Safe bottom utility to keep fixed/absolute UI above the home indicator */
-.bottom-safe { bottom: 24px; }
-@supports (bottom: env(safe-area-inset-bottom)) { .bottom-safe { bottom: calc(env(safe-area-inset-bottom) + 16px); } }
-@supports (bottom: constant(safe-area-inset-bottom)) { .bottom-safe { bottom: calc(constant(safe-area-inset-bottom) + 16px); } }
+/* Footer safe positioning */
+.bottom-safe {
+  position: fixed;
+  bottom: 16px;
+  bottom: max(16px, env(safe-area-inset-bottom));
+}
