@@ -8,9 +8,10 @@ import TimePicker from './TimePicker';
 import CountdownSelector from './CountdownSelector';
 import HistoryModal from './HistoryModal';
 import { Settings, TimerMode, Interval, HistoryEntry } from '../types';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useUserSettings } from '@/src/hooks/useUserSettings';
 import { DEFAULT_SETTINGS } from '../constants';
-import { PlusIcon, TrashIcon, HistoryIcon } from './icons';
+import { PlusIcon, TrashIcon, HistoryIcon, LogoutIcon } from './icons';
+import { useAuth } from '@/src/context/AuthContext';
 
 interface ConfigurationScreenProps {
   onStart: (settings: Settings) => void;
@@ -37,7 +38,7 @@ const formatTotalTime = (settings: Settings): string => {
 };
 
 const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, history, onClearHistory }) => {
-  const [savedSettings, setSavedSettings] = useLocalStorage<Settings>('flow-timer-settings', DEFAULT_SETTINGS);
+  const { settings: savedSettings, setSettings: setSavedSettings } = useUserSettings() as unknown as { settings: Settings; setSettings: (s: Settings) => void };
   const [localSettings, setLocalSettings] = useState<Settings>(savedSettings);
   const [activeView, setActiveView] = useState<'simple' | 'advanced' | 'presets'>(
     savedSettings.mode === TimerMode.Simple ? 'simple' : 'advanced'
@@ -88,11 +89,11 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
   }, [savedSettings]);
 
   useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem('lastPresetMeta');
-      if (raw) setPresetMeta(JSON.parse(raw));
-    } catch { /* ignore */ }
+    // Removed sessionStorage; keep ephemeral for this session only
+    setPresetMeta(null);
   }, []);
+
+  const { signOut } = useAuth();
 
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg p-2 flex items-center justify-center">
@@ -104,13 +105,22 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <label className="text-xl font-semibold">Timer Mode</label>
-            <button
-              onClick={() => setIsHistoryOpen(true)}
-              className="p-2 rounded-lg hover:bg-light-subtle-bg dark:hover:bg-dark-subtle-bg transition-colors"
-              title="Session History"
-            >
-              <HistoryIcon className="w-6 h-6 text-light-text dark:text-dark-text" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsHistoryOpen(true)}
+                className="p-2 rounded-lg hover:bg-light-subtle-bg dark:hover:bg-dark-subtle-bg transition-colors"
+                title="Session History"
+              >
+                <HistoryIcon className="w-6 h-6 text-light-text dark:text-dark-text" />
+              </button>
+              <button
+                onClick={async () => { await signOut(); window.location.href = '/auth'; }}
+                className="p-2 rounded-lg hover:bg-light-subtle-bg dark:hover:bg-dark-subtle-bg transition-colors"
+                title="Sign Out"
+              >
+                <LogoutIcon className="w-6 h-6 text-light-text dark:text-dark-text" />
+              </button>
+            </div>
           </div>
           <div className="grid grid-cols-3 gap-2 p-1 bg-light-subtle-bg dark:bg-dark-subtle-bg rounded-lg">
             <button
@@ -306,14 +316,13 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStart, hist
               setLocalSettings({ ...s, simple: { ...s.simple }, advanced: { ...s.advanced } });
               setSavedSettings(s);
               setActiveView(s.mode === TimerMode.Simple ? 'simple' : 'advanced');
-              // Store meta in session to show description; read below.
-              sessionStorage.setItem('lastPresetMeta', JSON.stringify(meta));
+              // Removed sessionStorage persistence per Supabase-only storage policy
             }}
             onStartPreset={(s, meta) => {
               setLocalSettings({ ...s });
               setSavedSettings(s);
               setActiveView(s.mode === TimerMode.Simple ? 'simple' : 'advanced');
-              sessionStorage.setItem('lastPresetMeta', JSON.stringify(meta));
+               // Removed sessionStorage persistence per Supabase-only storage policy
               // Kick off the countdown + start via the parent flow
               onStart(s);
             }}

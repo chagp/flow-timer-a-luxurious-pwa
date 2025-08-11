@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/src/context/AuthContext';
 // import { motion, AnimatePresence } from 'framer-motion';
-import { useLocalStorage } from './hooks/useLocalStorage';
+import { useUserSettings } from '@/src/hooks/useUserSettings';
 import { useTimer } from './hooks/useTimer';
 import { useSound } from './hooks/useSound';
 import { ensureAudioReady, playCue } from './utils/soundManager';
@@ -15,8 +17,9 @@ import ThemeToggle from './components/ThemeToggle';
 import SessionCounter from './components/SessionCounter';
 import { SettingsIcon } from './components/icons';
 import A2HSHint from './components/A2HSHint';
+import { useTimerHistory } from '@/src/hooks/useTimerHistory';
+import MigrationBanner from '@/src/components/MigrationBanner';
 
-const AuthGate = React.lazy(() => import('./components/AuthGate'));
 const ConfigurationScreen = React.lazy(() => import('./components/ConfigurationScreen'));
 const CountdownScreen = React.lazy(() => import('./components/CountdownScreen'));
 
@@ -46,10 +49,12 @@ const formatRealTime = (ms: number) => {
 };
 
 const App: React.FC = () => {
-  const [settings, setSettings] = useLocalStorage<Settings>('flow-timer-settings', DEFAULT_SETTINGS);
-  const [history, setHistory] = useLocalStorage<HistoryEntry[]>('flow-timer-history', []);
-  const [theme, setTheme] = useLocalStorage<Theme>('flow-timer-theme', 'dark');
-  const [isAuthed, setIsAuthed] = useState<boolean>(false);
+  const { settings, setSettings, theme, setTheme, isLoading } = useUserSettings() as unknown as {
+    settings: Settings; setSettings: (s: Settings) => void; theme: Theme; setTheme: (t: Theme) => void; isLoading: boolean
+  };
+  const { history, addSession, clearHistory: clearServerHistory } = useTimerHistory();
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
   const [showConfig, setShowConfig] = useState(false);
   const [showCountdown, setShowCountdown] = useState(false);
   const [pendingSettings, setPendingSettings] = useState<Settings | null>(null);
@@ -68,8 +73,8 @@ const App: React.FC = () => {
       (window as any).requestIdleCallback(load, { timeout: 1500 });
     } else {
       // Fallback: defer until first pointer interaction
-      const onFirst = () => { load(); window.removeEventListener('pointerdown', onFirst); };
-      window.addEventListener('pointerdown', onFirst, { once: true, passive: true });
+      const onFirst = () => { load(); (window as any).removeEventListener('pointerdown', onFirst); };
+      (window as any).addEventListener('pointerdown', onFirst, { once: true, passive: true });
     }
     return () => { mounted = false; };
   }, []);
@@ -82,8 +87,13 @@ const App: React.FC = () => {
   const playCompleteSound = useSound('complete');
 
   const handleSessionEnd = useCallback((entry: HistoryEntry) => {
-    setHistory(prev => [entry, ...prev]);
-  }, [setHistory]);
+    addSession({
+      started_at: new Date().toISOString(),
+      duration_seconds: entry.duration,
+      status: 'completed',
+      preset: null,
+    });
+  }, [addSession]);
 
   const handleSound = useCallback((sound: 'start' | 'end' | 'complete') => {
     if (sound === 'start') playStartSound();
@@ -113,7 +123,7 @@ const App: React.FC = () => {
   }, [theme]);
   
   const toggleTheme = () => {
-    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+    setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
   useEffect(() => {
@@ -123,25 +133,9 @@ const App: React.FC = () => {
     return () => window.removeEventListener('pointerdown', onInteract);
   }, []);
 
-  const clearHistory = () => {
-      setHistory([]);
-  }
+  const clearHistory = () => { clearServerHistory(); };
 
-  // Auth gate: only show if Supabase env is configured; otherwise bypass in dev
-  const SUPABASE_URL = (import.meta as any).env?.VITE_SUPABASE_URL || (window as any).SUPABASE_URL;
-  const SUPABASE_ANON_KEY = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || (window as any).SUPABASE_ANON_KEY;
-  const hasSupabase = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
-  if (!isAuthed && hasSupabase) {
-    return (
-      <Suspense fallback={<div className="min-h-screen" /> }>
-        <AuthGate
-          supabaseUrl={SUPABASE_URL}
-          supabaseAnonKey={SUPABASE_ANON_KEY}
-          onAuthenticated={() => setIsAuthed(true)}
-        />
-      </Suspense>
-    );
-  }
+  // Authentication is now handled globally via AuthProvider + ProtectedRoute
 
   // Auto-start once settings are applied and timer has initialized
   useEffect(() => {
@@ -155,6 +149,8 @@ const App: React.FC = () => {
       setStartAfterSettings(false);
     }
   }, [startAfterSettings, timerState.totalDuration, timerState.timeRemaining, timerState.isActive, timerActions]);
+
+  if (isLoading) return <div className="min-h-screen" />;
 
   if (showCountdown && pendingSettings && pendingSettings.countdown > 0) {
     return (
@@ -203,6 +199,7 @@ const App: React.FC = () => {
   }
   return (
     <div className={`relative flex flex-col items-center justify-center min-h-screen p-4 font-sans text-light-text dark:text-dark-text transition-colors duration-500`}>  
+      <MigrationBanner />
       {/* Background overlays behind content; do not block interactions */}
       <MotionDiv
         className="absolute inset-0 z-0 pointer-events-none"

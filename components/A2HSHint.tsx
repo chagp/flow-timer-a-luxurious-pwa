@@ -20,8 +20,7 @@ const A2HSHint: React.FC = () => {
 
     if (installed) return;
 
-    // Show once per session
-    if (sessionStorage.getItem('a2hs-shown') === '1') return;
+    // No sessionStorage: show briefly each session; could be persisted in user_settings later
 
     // Android/Chrome flow: wait for beforeinstallprompt
     const onBeforeInstallPrompt = (e: Event) => {
@@ -49,7 +48,6 @@ const A2HSHint: React.FC = () => {
 
   const hide = (reason: 'auto' | 'close' | 'installed') => {
     setShow(false);
-    sessionStorage.setItem('a2hs-shown', '1');
     if (reason === 'installed') {
       bipEventRef.current = null;
     }
