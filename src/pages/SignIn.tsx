@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/src/context/AuthContext';
+import A2HSHint from '@/components/A2HSHint';
 import { GoogleIcon } from '@/components/icons';
 
 export default function SignIn() {
@@ -121,6 +122,7 @@ export default function SignIn() {
         </Link>
         </form>
       </section>
+      <A2HSHint />
     </div>
   );
 }
