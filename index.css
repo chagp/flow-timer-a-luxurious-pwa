@@ -26,7 +26,9 @@ body {
     position: fixed;
     inset: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100vh;   /* fallback */
+    height: 100dvh;  /* modern browsers */
+    height: 100svh;  /* iOS Safari small viewport */
     overflow: hidden;
     overscroll-behavior: none;
     -webkit-overflow-scrolling: auto;
@@ -35,11 +37,6 @@ body {
 }
 
 /* Safe bottom utility to keep fixed/absolute UI above the home indicator */
-.bottom-safe {
-  bottom: 10px;
-}
-@supports (bottom: env(safe-area-inset-bottom)) {
-  .bottom-safe {
-    bottom: calc(env(safe-area-inset-bottom) + 10px);
-  }
-}
+.bottom-safe { bottom: 24px; }
+@supports (bottom: env(safe-area-inset-bottom)) { .bottom-safe { bottom: calc(env(safe-area-inset-bottom) + 16px); } }
+@supports (bottom: constant(safe-area-inset-bottom)) { .bottom-safe { bottom: calc(constant(safe-area-inset-bottom) + 16px); } }
