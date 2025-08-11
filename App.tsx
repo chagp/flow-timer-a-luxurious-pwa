@@ -198,7 +198,7 @@ const App: React.FC = () => {
     );
   }
   return (
-    <div className={`relative flex flex-col items-center justify-center min-h-screen font-sans text-light-text dark:text-dark-text transition-colors duration-500 bg-light-bg dark:bg-dark-bg`} style={{ minHeight: '100svh', padding: 'env(safe-area-inset-top) 1rem env(safe-area-inset-bottom) 1rem' }}>  
+    <div className={`relative flex flex-col items-center justify-center min-h-screen p-4 font-sans text-light-text dark:text-dark-text transition-colors duration-500`} style={{ minHeight: '100svh' }}>  
       <MigrationBanner />
       {/* Background overlays behind content; do not block interactions */}
       <MotionDiv
@@ -248,7 +248,13 @@ const App: React.FC = () => {
         />
       </main>
 
-      <div className="fixed left-4 right-4 flex justify-between items-center font-mono text-base sm:text-lg text-light-text dark:text-dark-text z-10" style={{ bottom: 'max(16px, env(safe-area-inset-bottom))' }}>
+      <div
+        className="
+          fixed left-4 right-4 bottom-safe z-10
+          flex justify-between items-center
+          font-mono text-base sm:text-lg text-light-text dark:text-dark-text
+        "
+      >
         <span>Work: {formatWorkTime(timerState.totalWorkTime)}</span>
         <span>Total: {formatRealTime(timerState.realTimeElapsed)}</span>
       </div>

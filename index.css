@@ -2,58 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-/* PWA full-bleed background and safe-area handling */
-html {
-  height: 100vh;
-  height: 100dvh;
-  height: 100svh;
-  @apply bg-light-bg dark:bg-dark-bg;
-}
+/* ---------- 1. Default layout (browser) ---------- */
+html, body, #root { height: 100%; }
 
+/* Safe-area padding when the app runs in the browser */
 body {
   min-height: 100vh;
-  min-height: 100dvh;
-  min-height: 100svh;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  @apply bg-light-bg dark:bg-dark-bg;
+  padding: env(safe-area-inset-top,0) env(safe-area-inset-right,0)
+           env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);
 }
 
-#root {
-  min-height: 100%;
-  @apply bg-light-bg dark:bg-dark-bg;
-}
-
-/* Standalone PWA mode: lock viewport and remove padding */
+/* ---------- 2. Stand-alone PWA ---------- */
 @media (display-mode: standalone) {
-  html, body {
+  body { padding: 0; }          /* remove browser padding */
+  html, body, #root {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;   /* fallback */
+    height: 100svh;  /* iOS 16-17 */
+    height: 100dvh;  /* Android */
     overflow: hidden;
     overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
     touch-action: manipulation;
-  }
-  
-  body {
-    padding: 0;
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    height: 100svh;
-  }
-  
-  #root {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    height: 100svh;
   }
 }
 
-/* Footer safe positioning */
-.bottom-safe {
-  position: fixed;
-  bottom: 16px;
-  bottom: max(16px, env(safe-area-inset-bottom));
+/* ---------- 3. Utility to pin UI above home-indicator ---------- */
+.bottom-safe { bottom: 24px; }
+@supports (bottom: env(safe-area-inset-bottom))   {
+  .bottom-safe { bottom: calc(env(safe-area-inset-bottom) + 16px); }
+}
+@supports (bottom: constant(safe-area-inset-bottom)) {              /* old iOS */
+  .bottom-safe { bottom: calc(constant(safe-area-inset-bottom) + 16px); }
 }
