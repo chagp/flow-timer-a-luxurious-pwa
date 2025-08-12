@@ -20,13 +20,13 @@ export default function SignIn() {
     e.preventDefault();
     setError(null);
     if (!email || !password) {
-      setError('Email and password are required');
+      setError('Please enter your email and password.');
       return;
     }
     setLoading(true);
     const result = await signIn(email, password);
     if ((result as any)?.error) {
-      setError('Invalid email or password');
+      setError("We couldn't verify those details. Try again.");
       setLoading(false);
       return;
     }
@@ -59,11 +59,11 @@ export default function SignIn() {
           className={`w-full max-w-md rounded-2xl border bg-light-card dark:bg-dark-card p-6 shadow-xl border-light-border dark:border-dark-border transition-all duration-500 ${formVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
         >
           <div className="space-y-3">
-            <div className="text-xs uppercase tracking-wide text-light-text/70 dark:text-dark-text/70">Private beta</div>
-            <h2 className="text-2xl font-bold text-light-text dark:text-dark-text">You’ve been selected</h2>
+            <div className="text-xs uppercase tracking-wide text-light-text/70 dark:text-dark-text/70">Private Beta</div>
+            <h2 className="text-2xl font-bold text-light-text dark:text-dark-text">Private access granted.</h2>
             <p className="text-sm text-light-text/80 dark:text-dark-text/80">
-              A small group of athletes are helping us shape the next version of Flow Timer.
-              Your feedback unlocks pro features and early access perks.
+              You’re among a hand‑selected group shaping the next evolution of Flow Timer. Enjoy early
+              access to Pro capabilities and bespoke updates crafted around your feedback.
             </p>
             {/* CTA removed per request */}
           </div>
@@ -79,7 +79,7 @@ export default function SignIn() {
         >
         <div className="space-y-1 mb-1">
           <h1 className="text-2xl font-semibold text-light-text dark:text-dark-text">Sign in</h1>
-          <p className="text-xs text-light-text/70 dark:text-dark-text/70">Welcome back. Let’s get to work.</p>
+          <p className="text-xs text-light-text/70 dark:text-dark-text/70">Welcome back—let’s get you in.</p>
         </div>
         {error && <div className="text-red-500 text-sm">{error}</div>}
         <div className="space-y-1">
@@ -88,6 +88,7 @@ export default function SignIn() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@domain.com"
             className="w-full p-3 rounded-lg border border-light-border dark:border-dark-border bg-transparent focus:outline-none focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent transition"
             required
           />
@@ -98,27 +99,28 @@ export default function SignIn() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
             className="w-full p-3 rounded-lg border border-light-border dark:border-dark-border bg-transparent focus:outline-none focus:ring-2 focus:ring-light-accent dark:focus:ring-dark-accent transition"
             required
           />
         </div>
         <button disabled={loading} type="submit" className="w-full py-3 rounded-lg bg-light-accent dark:bg-dark-accent text-white font-semibold disabled:opacity-50">
-          {loading ? 'Signing in…' : 'Sign In'}
+          {loading ? 'Signing you in…' : 'Sign In'}
         </button>
-        <div className="text-center text-sm text-light-text/70 dark:text-dark-text/70">or</div>
+        <div className="text-center text-sm text-light-text/70 dark:text-dark-text/70">or continue with</div>
         <button
           type="button"
           onClick={handleGoogle}
           className="w-full py-3 rounded-lg border border-light-border dark:border-dark-border hover:bg-white/5 transition text-light-text dark:text-dark-text flex items-center justify-center gap-2"
         >
           <GoogleIcon className="w-5 h-5" />
-          Sign in with Google
+          Continue with Google
         </button>
         <Link
           to="/signup"
           className="block text-center text-sm text-light-text dark:text-dark-text underline decoration-2 underline-offset-4 font-medium"
         >
-          No account? Create one
+          New here? Create an account
         </Link>
         </form>
       </section>

@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '@/src/context/AuthContext';
 import AppRoutes from '@/src/components/AppRoutes';
 import './index.css';
-import './src/main';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
