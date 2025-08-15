@@ -25,7 +25,18 @@
 
 
   </head>
-  <body class="bg-light-bg dark:bg-dark-bg transition-colors duration-500" style="height:100vh; overscroll-behavior:none;">
+  <body class="bg-light-bg dark:bg-dark-bg transition-colors duration-500" style="overscroll-behavior:none;">
+    <script>
+      // Ensure full-height on iOS (Safari, PWA, and WKWebView wrappers)
+      (function() {
+        const setAppHeight = () => {
+          document.documentElement.style.setProperty('--app-height', window.innerHeight + 'px');
+        };
+        window.addEventListener('resize', setAppHeight);
+        window.addEventListener('orientationchange', setAppHeight);
+        setAppHeight();
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

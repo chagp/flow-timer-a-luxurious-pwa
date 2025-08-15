@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------- 0. Base reset / iOS WKWebView friendliness ---------- */
+html, body { margin: 0; }
+#root {
+  /* Ensure the app background extends into the iOS safe areas in native wrappers */
+  min-height: 100vh;   /* fallback */
+  min-height: 100svh;  /* iOS 16-17 */
+  min-height: 100dvh;  /* modern browsers */
+  background: inherit; /* extend body background */
+}
+
 /* ---------- 1. Default layout (browser) ---------- */
 html, body, #root { height: 100%; }
 
@@ -31,6 +41,10 @@ body {
 
 /* ---------- 3. Utility to pin UI above home-indicator ---------- */
 .bottom-safe { bottom: 10px; }
+@supports (padding: max(0px)) {
+  /* Allow containers to consume the bottom inset while keeping content away from the edge */
+  .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 10px); }
+}
 @supports (bottom: env(safe-area-inset-bottom))   {
   .bottom-safe { bottom: calc(env(safe-area-inset-bottom) + 10px); }
 }
