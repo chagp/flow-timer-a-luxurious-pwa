@@ -13,7 +13,7 @@ html, body { margin: 0; }
 }
 
 /* Cover the entire safe area for fixed-position backgrounds/overlays */
-.safe-area-cover { position: fixed; }
+.safe-area-cover { position: fixed; background-color: inherit; }
 @supports (top: env(safe-area-inset-top)) {
   .safe-area-cover {
     top: calc(-1 * env(safe-area-inset-top));
@@ -31,6 +31,13 @@ body {
   min-height: 100vh;
   padding: env(safe-area-inset-top,0) env(safe-area-inset-right,0)
            env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);
+}
+
+/* In native WKWebView wrapper we take full control of insets via JS and CSS.
+   Avoid double-padding from browser defaults. */
+.native-wkwebview body {
+  padding: 0 !important;
+  background-color: inherit;
 }
 
 /* ---------- 2. Stand-alone PWA ---------- */

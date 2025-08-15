@@ -35,6 +35,12 @@
         window.addEventListener('resize', setAppHeight);
         window.addEventListener('orientationchange', setAppHeight);
         setAppHeight();
+
+        // Detect iOS native WKWebView wrapper and remove browser-style safe-area padding
+        var isNativeWK = !!(window.webkit && window.webkit.messageHandlers);
+        if (isNativeWK) {
+          document.documentElement.classList.add('native-wkwebview');
+        }
       })();
     </script>
     <div id="root"></div>
