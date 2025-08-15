@@ -44,6 +44,14 @@
       })();
     </script>
     <div id="root"></div>
+    <script>
+      // Register service worker for PWA-only wrapper
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js').catch(function(){});
+        });
+      }
+    </script>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
