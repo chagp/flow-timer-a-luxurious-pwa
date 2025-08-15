@@ -12,6 +12,17 @@ html, body { margin: 0; }
   background: inherit; /* extend body background */
 }
 
+/* Cover the entire safe area for fixed-position backgrounds/overlays */
+.safe-area-cover { position: fixed; }
+@supports (top: env(safe-area-inset-top)) {
+  .safe-area-cover {
+    top: calc(-1 * env(safe-area-inset-top));
+    right: calc(-1 * env(safe-area-inset-right));
+    bottom: calc(-1 * env(safe-area-inset-bottom));
+    left: calc(-1 * env(safe-area-inset-left));
+  }
+}
+
 /* ---------- 1. Default layout (browser) ---------- */
 html, body, #root { height: 100%; }
 

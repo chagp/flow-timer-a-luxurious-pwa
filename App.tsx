@@ -202,20 +202,20 @@ const App: React.FC = () => {
       className={`relative flex flex-col items-center justify-center min-h-screen p-4 font-sans text-light-text dark:text-dark-text transition-colors duration-500`}
       style={{
         // Ensure the app background and layers extend into the iOS home-indicator area in native wrappers
-        minHeight: '100dvh',
-        height: 'var(--app-height)',
+        minHeight: 'calc(100dvh + env(safe-area-inset-bottom, 0px))',
+        height: 'calc(var(--app-height) + env(safe-area-inset-bottom, 0px))',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)'
       }}
     >  
       <MigrationBanner />
       {/* Background overlays behind content; do not block interactions */}
       <MotionDiv
-        className="absolute inset-0 z-0 pointer-events-none"
+        className="safe-area-cover z-0 pointer-events-none"
         style={{ background: workGradient }}
         {...(framerModule ? { initial: false, animate: { opacity: isWorkActive ? 1 : 0 }, transition: { duration: 0.4 } } : {})}
       />
       <MotionDiv
-        className="absolute inset-0 z-0 pointer-events-none"
+        className="safe-area-cover z-0 pointer-events-none"
         style={{ background: breakGradient }}
         {...(framerModule ? { initial: false, animate: { opacity: isBreakActive ? 1 : 0 }, transition: { duration: 0.4 } } : {})}
       />
