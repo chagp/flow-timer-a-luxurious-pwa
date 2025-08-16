@@ -47,14 +47,27 @@ body {
     position: fixed;
     inset: 0;
     width: 100vw;
-    height: 100vh;   /* fallback */
-    height: 100svh;  /* iOS 16-17 */
-    height: 100dvh;  /* Android */
+    height: var(--app-height);
+    min-height: var(--app-height);
     overflow: hidden;
     overscroll-behavior: none;
     -webkit-overflow-scrolling: auto;
     touch-action: manipulation;
   }
+}
+
+/* ---------- 2b. Fallback for iOS navigator.standalone detection ---------- */
+html.pwa-standalone body { padding: 0; }
+html.pwa-standalone, html.pwa-standalone body, html.pwa-standalone #root {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: var(--app-height);
+  min-height: var(--app-height);
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
+  touch-action: manipulation;
 }
 
 /* ---------- 3. Utility to pin UI above home-indicator ---------- */

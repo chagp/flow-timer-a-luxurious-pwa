@@ -202,7 +202,7 @@ const App: React.FC = () => {
       className={`relative flex flex-col items-center justify-center min-h-screen p-4 font-sans text-light-text dark:text-dark-text transition-colors duration-500`}
       style={{
         // Ensure the app background and layers extend into the iOS home-indicator area in native wrappers
-        minHeight: 'calc(100dvh + env(safe-area-inset-bottom, 0px))',
+        minHeight: 'calc(var(--app-height) + env(safe-area-inset-bottom, 0px))',
         height: 'calc(var(--app-height) + env(safe-area-inset-bottom, 0px))',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)'
       }}

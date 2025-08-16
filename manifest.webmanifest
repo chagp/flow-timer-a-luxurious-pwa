@@ -1,7 +1,8 @@
 {
   "name": "Flow Timer",
   "short_name": "FlowTimer",
-  "start_url": "/?source=pwa&v=2",
+  "id": "/",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#121212",
