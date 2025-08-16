@@ -4,7 +4,7 @@
    - Stale-while-revalidate for static assets
 */
 const CACHE_PREFIX = 'flow-timer-cache-';
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const RUNTIME_CACHE = `${CACHE_PREFIX}${CACHE_VERSION}`;
 
 self.addEventListener('install', (event) => {

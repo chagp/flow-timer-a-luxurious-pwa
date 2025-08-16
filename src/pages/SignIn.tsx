@@ -54,7 +54,7 @@ export default function SignIn() {
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg overflow-x-hidden snap-y snap-mandatory">
       {/* Section 1: Private beta (full viewport) */}
-      <section className="min-h-[100svh] flex items-center justify-center p-6 snap-start">
+      <section className="min-h-[var(--app-height)] flex items-center justify-center p-6 snap-start">
         <div
           className={`w-full max-w-md rounded-2xl border bg-light-card dark:bg-dark-card p-6 shadow-xl border-light-border dark:border-dark-border transition-all duration-500 ${formVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
         >
@@ -71,7 +71,7 @@ export default function SignIn() {
       </section>
 
       {/* Section 2: Sign-in (full viewport) */}
-      <section ref={sectionRef} className="min-h-[100svh] flex items-center justify-center p-6 snap-start">
+      <section ref={sectionRef} className="min-h-[var(--app-height)] flex items-center justify-center p-6 snap-start">
         <form
           ref={formRef}
           onSubmit={handleSubmit}

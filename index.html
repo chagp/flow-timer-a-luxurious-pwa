@@ -9,7 +9,7 @@
     <meta name="application-name" content="Flow Timer">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Flow Timer">
     <meta name="description" content="A luxurious Pomodoro and interval timer to help you focus.">
     <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
@@ -26,23 +26,34 @@
 
   </head>
   <body class="bg-light-bg dark:bg-dark-bg transition-colors duration-500" style="overscroll-behavior:none;">
-    <script>
-      // Ensure full-height on iOS (Safari, PWA, and WKWebView wrappers)
-      (function() {
-        const setAppHeight = () => {
-          document.documentElement.style.setProperty('--app-height', window.innerHeight + 'px');
-        };
-        window.addEventListener('resize', setAppHeight);
-        window.addEventListener('orientationchange', setAppHeight);
-        setAppHeight();
-
-        // Detect iOS native WKWebView wrapper and remove browser-style safe-area padding
-        var isNativeWK = !!(window.webkit && window.webkit.messageHandlers);
-        if (isNativeWK) {
-          document.documentElement.classList.add('native-wkwebview');
-        }
-      })();
-    </script>
+         <script>
+       // Ensure full-height on iOS (Safari, PWA, and WKWebView wrappers)
+       (function() {
+         const setAppHeight = () => {
+           // Use visualViewport when available to avoid 100vh issues on iOS
+           const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+           document.documentElement.style.setProperty('--app-height', vh + 'px');
+         };
+         window.addEventListener('resize', setAppHeight);
+         window.addEventListener('orientationchange', setAppHeight);
+         window.addEventListener('visibilitychange', setAppHeight);
+         if (window.visualViewport) {
+           window.visualViewport.addEventListener('resize', setAppHeight);
+         }
+         setAppHeight();
+ 
+         // Detect iOS native WKWebView wrapper and remove browser-style safe-area padding
+         var isNativeWK = !!(window.webkit && window.webkit.messageHandlers);
+          if (isNativeWK) {
+            document.documentElement.classList.add('native-wkwebview');
+          }
+          // Add pwa-standalone class for CSS fallback when possible
+          const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+          if (isStandalone) {
+            document.documentElement.classList.add('pwa-standalone');
+          }
+       })();
+     </script>
     <div id="root"></div>
     <script>
       // Register service worker for PWA-only wrapper
